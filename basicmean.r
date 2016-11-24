@@ -8,7 +8,8 @@ basicmean=function(data,position,lowcut,highcut){
   # Calculate statistics
   data_mean=mean(data_in_range)
   data_stdev=sd(data_in_range)
-  print(data_stdev)
-  return(data_mean)
+  cat('Standard deviation',data_stdev,'\n')
+  cat('Mean',data_mean,'\n')
+#  return(data_mean)
 }
   
