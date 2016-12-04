@@ -56,7 +56,11 @@ ai <- as.numeric(ai)
 # binning_start <- readline(prompt = "Enter the start depth of the binning operation in mm: ")
 
 # perform the binning operation
-df_avg <- aggregate(df,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),mean)
+df_avg <- aggregate(df,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),mean)[-1]
+df_avg$depthmin <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),min)[-1]
+names(df_avg)[names(df_avg)=="x"] <- "depth_min" # this doesn't work properly. Weird.
+df_avg$depthmax <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),max)[-1]
+names(df_avg)[names(df_avg)=="x"] <- "depth_max" # this doesn't work properly. Weird.
 
 # perform some basic multi-variate analysis
 
