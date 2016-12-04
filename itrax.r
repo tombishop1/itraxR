@@ -51,7 +51,8 @@ require(analogue)
 Stratiplot(df[-grep("depth|position",colnames(df))], df$depth, varTypes = "absolute", absolutesize = "1", strip = TRUE)
 
 # ask for the sub-sampling interval for averaging into chunks (binning)
-averaging_interval <- readline(prompt = "Enter the sampling interval to use in binning operations in mm: ")
-binning_start <- readline(prompt = "Enter the start depth of the binning operation in mm: ")
+ai <- readline(prompt = "Enter the sampling interval to use in binning operations in rows: ")
+# binning_start <- readline(prompt = "Enter the start depth of the binning operation in mm: ")
 
 # perform the binning operation
+df_avg <- aggregate(df,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),mean)
