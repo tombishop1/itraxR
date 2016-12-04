@@ -52,7 +52,40 @@ Stratiplot(df[-grep("depth|position",colnames(df))], df$depth, varTypes = "absol
 
 # ask for the sub-sampling interval for averaging into chunks (binning)
 ai <- readline(prompt = "Enter the sampling interval to use in binning operations in rows: ")
+ai <- as.numeric(ai)
 # binning_start <- readline(prompt = "Enter the start depth of the binning operation in mm: ")
 
 # perform the binning operation
 df_avg <- aggregate(df,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),mean)
+
+# perform some basic multi-variate analysis
+
+# plot an ordination diagram to explore the data
+
+# offer the option to export the data
+export_opt <- readline(prompt = "Do you want to export the data produced by this script? (y/n) ")
+if(export_opt == "y") {
+	write.table(df_avg, "results_avg.txt", sep="\t")
+} else {
+	message("No data export initiated")
+}
+
+# offer the option to clean-up the workspace
+message("The following objects are in memory:")
+ls()
+cleanup_opt <- readline(prompt = "Do you wish to clean-up (e)verything, (n)othing, or (l)eave only the data: ")
+if(cleanup_opt == "e") {
+	rm(list = ls())
+	message("The following objects are now in memory:")
+	message(ls())
+} else if(cleanup_opt == "l") {
+	rm("ai", "depth_offset", "depth_top", "filename", "cleanup_opt", "export_opt")
+	message("The following objects are now in memory:")
+	message(ls())
+} else {
+	message("The following objects are now in memory:")
+	message(ls())
+}
+
+# end the script gracefully
+stop("The script ends here.")
