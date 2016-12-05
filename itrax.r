@@ -51,30 +51,30 @@ require(analogue)
 Stratiplot(df[-grep("depth|position",colnames(df))], df$depth, varTypes = "absolute", absolutesize = "1", strip = TRUE)
 
 # ask for the sub-sampling interval for averaging into chunks (binning)
-ai <- readline(prompt = "Enter the sampling interval to use in binning operations in rows: ")
+ai <- readline(prompt = "Enter the sampling interval to use in binning operations in mm: ")
 ai <- as.numeric(ai)
-# binning_start <- readline(prompt = "Enter the start depth of the binning operation in mm: ")
+
+# work out the distance a row on row increment represents
+scaninterval <- df[2,"depth"] - df[1,"depth"]
+scaninterval <- round(scaninterval, digits =2)
+
+# change ai to represent the equivalent number of rows
+# round it so it is a whole number
+ai <- ai / scaninterval
+ai <- round(ai)
+message("The scan interval is ", scaninterval , ", and so the binning window has been rounded to ", round(ai * scaninterval) ,"mm.")
+
+# ask for where the junk data becomes good data for the purposes of binning
+binning_start <- readline(prompt = "Enter the start depth of the binning operation in mm: ")
+binning_start <- as.numeric(binning_start)
+
+# trim the junk data at the beginning of the scan
+df <- subset(df, df$depth > binning_start)
 
 # perform the binning operation
 df_avg <- aggregate(df,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),mean)[-1]
 df_avg$depthmin <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),min)$x
-
-# debug lines
-print("head(df_avg)=")
-print(head(df_avg))
-print("names(df_avg)=")
-print(names(df_avg))
-
-names(df_avg)[names(df_avg)=="x"] <- "depth_min" # this doesn't work properly. Weird.
 df_avg$depthmax <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),max)$x
-
-# debug lines
-print("head(df_avg)=")
-print(head(df_avg))
-print("names(df_avg)=")
-print(names(df_avg))
-
-names(df_avg)[names(df_avg)=="x"] <- "depth_max" # this doesn't work properly. Weird.
 
 # perform some basic multi-variate analysis
 
@@ -97,7 +97,7 @@ if(cleanup_opt == "e") {
 	message("The following objects are now in memory:")
 	message(ls())
 } else if(cleanup_opt == "l") {
-	rm("ai", "depth_offset", "depth_top", "filename", "cleanup_opt", "export_opt")
+	rm("ai", "depth_offset", "depth_top", "filename", "cleanup_opt", "export_opt", "scaninterval", "binning_start")
 	message("The following objects are now in memory:")
 	message(ls())
 } else {
