@@ -54,7 +54,7 @@ Stratiplot(df[-grep("depth|position",colnames(df))], df$depth, varTypes = "absol
 ai <- readline(prompt = "Enter the sampling interval to use in binning operations in mm: ")
 ai <- as.numeric(ai)
 
-# work out the distance a row on row increment represents
+# work out the distance as row on row increment represents
 scaninterval <- df[2,"depth"] - df[1,"depth"]
 scaninterval <- round(scaninterval, digits =2)
 
@@ -65,20 +65,37 @@ ai <- round(ai)
 message("The scan interval is ", scaninterval , ", and so the binning window has been rounded to ", round(ai * scaninterval) ,"mm.")
 
 # ask for where the junk data becomes good data for the purposes of binning
-binning_start <- readline(prompt = "Enter the start depth of the binning operation in mm: ")
+binning_start <- readline(prompt = "Enter the start depth of good data in mm: ")
 binning_start <- as.numeric(binning_start)
 
 # trim the junk data at the beginning of the scan
 df <- subset(df, df$depth > binning_start)
+
+#trim the junk data at the end of the scan
+binning_end <- readline(prompt = "Enter the end depth of good data in mm: ")
+binning_end <- as.numeric(binning_end)
+
+# trim the junk data at the end of the scan
+df <- subset(df, df$depth < binning_end)
 
 # perform the binning operation
 df_avg <- aggregate(df,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),mean)[-1]
 df_avg$depthmin <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),min)$x
 df_avg$depthmax <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%ai+1),each=ai,len=length(df$depth))),max)$x
 
-# perform some basic multi-variate analysis
+# load and prepare the data for the PCA
+df_clr <- df
+rownames(df_clr) <- round(df_clr$depth, digits = 1)
+df_clr <- df_clr[-grep("position|sample.surface|validity|cps|MSE|Mo.inc|Mo.coh|depth",colnames(df_clr))]
 
-# plot an ordination diagram to explore the data
+# calculate centered log ratios for all elements in the original dataset
+require(compositions)
+#clr(...)
+
+# perform a principle components analysis of the original dataset and display the eigenvalues
+#princomp(...)
+
+# plot an ordination diagram of axes 1 and 2, with sample and variable scores, to explore the data (new window)
 
 # offer the option to export the data
 export_opt <- readline(prompt = "Do you want to export the data produced by this script? (y/n) ")
