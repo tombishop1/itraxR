@@ -71,7 +71,7 @@ binning_start <- as.numeric(binning_start)
 # trim the junk data at the beginning of the scan
 df <- subset(df, df$depth > binning_start)
 
-#trim the junk data at the end of the scan
+# trim the junk data at the end of the scan
 binning_end <- readline(prompt = "Enter the end depth of good data in mm: ")
 binning_end <- as.numeric(binning_end)
 
@@ -88,19 +88,34 @@ df_clr <- df
 rownames(df_clr) <- round(df_clr$depth, digits = 1)
 df_clr <- df_clr[-grep("position|sample.surface|validity|cps|MSE|Mo.inc|Mo.coh|depth",colnames(df_clr))]
 
+# remove zero values so the data can be transformed
+# df_clr[df_clr == 0] <- 0.001
+df_clr <- df_clr + 1 # we can use either of these options, and more. 
+
 # calculate centered log ratios for all elements in the original dataset
-require(compositions)
-#clr(...)
+require(chemometrics) # we could also use "compositions" package
+df_clr <- clr(df_clr)
 
 # perform a principle components analysis of the original dataset and display the eigenvalues
-#princomp(...)
+df_pca <- prcomp(df_clr)
+summary(df_pca)
 
-# plot an ordination diagram of axes 1 and 2, with sample and variable scores, to explore the data (new window)
+# plot an ordination diagram of axes 1 and 2, with sample and variable scores, to explore the data
+# then plot the first axis by position
+biplot(df_pca)
+plot(row.names(df_pca$x), df_pca$x[ , 1])
+
+# run "pairs" and a correlation matrix to further look into relationships in the data
+# run pairs with a reduced dataset, becuase otherwise it takes ages to work
+# pairs(df_clr)
+# now run the correlation matrix
+require(Hmisc)
+df_cm <- rcorr(as.matrix(df_clr), type = "pearson")
 
 # offer the option to export the data
 export_opt <- readline(prompt = "Do you want to export the data produced by this script? (y/n) ")
 if(export_opt == "y") {
-	write.table(df_avg, "results_avg.txt", sep="\t")
+	write.table(df_avg, "results_avg.txt", sep = "\t")
 } else {
 	message("No data export initiated")
 }
