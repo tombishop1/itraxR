@@ -8,7 +8,7 @@
 ## ITRAX-IMPORT  ##
 ###################
 
-itrax_import=function(datafile="result.txt", depth_top=NULL, trim_top=NULL, trim_bottom=NULL, na_validity=NULL, few_parameters=TRUE, graph=NULL, export=NULL){
+itrax_import=function(datafile="result.txt", depth_top=NULL, trim_top=NULL, trim_bottom=NULL, na_validity=NULL, few_parameters=TRUE, graph=NULL, export=NULL) {
 
 # assert file exists
 if (!file.exists(datafile)){
@@ -99,7 +99,7 @@ return(df)
 ## ITRAX-ORDINATION ##
 ######################
 
-itrax_ordination=function(dataframe, elementsonly=TRUE, zeros="addone", transform=TRUE, diagrams=TRUE){
+itrax_ordination=function(dataframe, elementsonly=TRUE, zeros="addone", transform=TRUE, diagrams=TRUE) {
 
 # check the dataframe exists
 if(is.data.frame(dataframe)){
@@ -167,11 +167,11 @@ if(diagrams==TRUE) {
 return(df_pca)
 }
 
-######################
-## ITRAX-ORDINATION ##
-######################
+#######################
+## ITRAX-CORRELATION ##
+#######################
 
-itrax_correlation=function(dataframe, elementsonly=TRUE, zeros="addone", transform=TRUE, diagrams=TRUE){
+itrax_correlation=function(dataframe, elementsonly=TRUE, zeros="addone", transform=TRUE, diagrams=TRUE) {
 
 # check the dataframe exists
 if(is.data.frame(dataframe)){
@@ -222,7 +222,7 @@ if(transform==TRUE) {
 }
 
 # run pairs
-if(diagrams=TRUE) {
+if(diagrams==TRUE) {
 	dev.new()
 	pairs(df)
 }
@@ -232,4 +232,29 @@ require(Hmisc)
 df <- rcorr(as.matrix(df), type = "pearson")
 
 return(df)
+}
+
+#######################
+## ITRAX-AVERAGING   ##
+#######################
+
+itrax_averaging=function(dataframe, interval) {
+
+df <- dataframe
+
+# work out the distance as row on row increment represents
+scaninterval <- df[2, "depth"] - df[1, "depth"]
+scaninterval <- round(scaninterval, digits=2)
+
+# change ai to represent the equivalent number of rows
+# round it so it is a whole number
+interval <- interval / scaninterval
+interval <- round(interval)
+
+# perform the binning operation
+df_avg          <- aggregate(df,list(rep(1:(length(df$depth)%/%interval+1),each=interval,len=length(df$depth))),mean)[-1]
+df_avg$depthmin <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%interval+1),each=interval,len=length(df$depth))),min)$x
+df_avg$depthmax <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%interval+1),each=interval,len=length(df$depth))),max)$x
+
+return(df_avg)
 }
