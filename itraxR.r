@@ -9,6 +9,15 @@
 ###################
 
 itrax_import=function(datafile="result.txt", depth_top=NULL, trim_top=NULL, trim_bottom=NULL, na_validity=NULL, few_parameters=TRUE, graph=NULL, export=NULL) {
+# datafile			= 	name of the input data
+# depth_top			= 	defines the coring depth of the top of the scan
+# trim_top			= 	how much bad data at the start of the scan to remove
+# trim_bottom		= 	how much bad data at the end of the scan to remove
+# na_validity		= 	makes invalid data "NA" - on by default
+# few_parameters	= 	TRUE (default) passes elemental and limited metadata
+#						FALSE passes all data without removing anything
+# graph				=	draws a graph
+# export			=	exports the data
 
 # assert file exists
 if (!file.exists(datafile)){
@@ -43,10 +52,10 @@ if(few_parameters==TRUE){
 	df <- df[ , which(names(df) %in% append(elements, others))]
 } else if(few_parameters==FALSE){
 	df <- df
-} else if(few_parameters==ELEMENTS){
-	df <- df[ , which(names(df) %in% elements)]
-} else {
-	df <- df[ , which(names(df) %in% few_parameters)]
+# } else if(few_parameters=="ELEMENTS"){
+#	df <- df[ , which(names(df) %in% elements)]
+#} else {
+#	df <- df[ , which(names(df) %in% few_parameters)]
 }
 
 # re-name the position variable
@@ -73,12 +82,14 @@ df$validity = as.logical(df$validity)
 
 # trim the junk data at the beginning of the scan
 if(!is.null(trim_top)){
-	df <- subset(df, df$depth > trim_top)
+	top_trim_position <- min(df$depth) + trim_top
+	df <- subset(df, df$depth > top_trim_position)
 } 
 
 # trim the junk data at the end of the scan
 if(!is.null(trim_bottom)){
-	df <- subset(df, df$depth < trim_bottom)
+	bottom_trim_position <- max(df$depth) - trim_bottom 
+	df <- subset(df, df$depth < bottom_trim_position)
 }
 
 # make a pretty graph
@@ -221,18 +232,18 @@ if(transform==TRUE) {
 	df <- clr(df)
 }
 
-# run pairs
+# run the correlation matrix
+cor(df, use = "pairwise.complete.obs", method = "pearson")
+
+# run diagrams
 if(diagrams==TRUE) {
 	dev.new()
-	pairs(df)
+	corrplot.mixed(df, lower="number", upper="color", order="AOE" )
 }
-
-# now run the correlation matrix
-require(Hmisc)
-df <- rcorr(as.matrix(df), type = "pearson")
 
 return(df)
 }
+
 
 #######################
 ## ITRAX-AVERAGING   ##
@@ -257,4 +268,28 @@ df_avg$depthmin <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%interval+1)
 df_avg$depthmax <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%interval+1),each=interval,len=length(df$depth))),max)$x
 
 return(df_avg)
+}
+
+#######################
+##    ITRAX-JOIN     ##
+#######################
+
+itrax_join=function(files = list(), depths = list(), resolution = 200) {
+
+# get the list of data files
+
+# get the list of depths
+
+# import the data files
+
+
+# re-map the depths
+
+# combine the data drames into a single drame
+
+# re-order the single data frame into depth order
+
+# calculate a running mean so the resolution hasn't changed over overlapping sections
+
+return(df)
 }
