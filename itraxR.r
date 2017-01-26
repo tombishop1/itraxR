@@ -274,22 +274,22 @@ return(df_avg)
 ##    ITRAX-JOIN     ##
 #######################
 
-itrax_join=function(files = list(), depths = list(), resolution = 200) {
+itrax_join=function(list) {
+# list should be in the format "list(dataframe1, dataframe2, etc...)"
 
-# get the list of data files
+# label the individual scans - this needs to iterate along the list called "list", e.g.
+# dataframe1$labels <- deparse(substitute(dataframe1))
+# dataframe2$labels <- deparse(substitute(dataframe2)) etc. etc.
 
-# get the list of depths
+#addlabels=function(x){x$labels<-deparse(substitute(x))}
+#df <- lapply(list, addlabels)
 
-# import the data files
+# stick them together
+require(dplyr)
+df <- bind_rows(list)
 
-
-# re-map the depths
-
-# combine the data drames into a single drame
-
-# re-order the single data frame into depth order
-
-# calculate a running mean so the resolution hasn't changed over overlapping sections
+# sort the rows in order of depth
+df <- df[with( df, order(depth) ) , ]
 
 return(df)
 }
