@@ -183,7 +183,7 @@ return(df_pca)
 #######################
 
 itrax_correlation=function(dataframe, elementsonly=TRUE, zeros="addone", transform=TRUE, diagrams=TRUE) {
-
+require(corrplot)
 # check the dataframe exists
 if(is.data.frame(dataframe)){
  #if(exists(dataframe) && is.data.frame(get(dataframe))){
@@ -233,15 +233,15 @@ if(transform==TRUE) {
 }
 
 # run the correlation matrix
-cor(df, use = "pairwise.complete.obs", method = "pearson")
+df_cor <- cor(df, use = "pairwise.complete.obs", method = "pearson")
 
 # run diagrams
 if(diagrams==TRUE) {
 	dev.new()
-	corrplot.mixed(df, lower="number", upper="color", order="AOE" )
+	corrplot.mixed(df_cor, lower="number", upper="color", order="AOE" )
 }
 
-return(df)
+return(df_cor)
 }
 
 
@@ -274,15 +274,15 @@ return(df_avg)
 ##    ITRAX-JOIN     ##
 #######################
 
-itrax_join=function(list) {
 # list should be in the format "list(core1 = dataframe1, core 2 = dataframe2, etc...)"
 
 # label the individual scans - this needs to iterate along the list called "list", e.g.
 # dataframe1$labels <- deparse(substitute(dataframe1))
 # dataframe2$labels <- deparse(substitute(dataframe2)) etc. etc.
 
-require(dplyr)
+
 itrax_join=function(list){
+require(dplyr)
 
 # label the data
 list <- lapply(names(list), function(i) within(list[[i]], {label <- i}))
