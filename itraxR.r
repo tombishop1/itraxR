@@ -275,20 +275,22 @@ return(df_avg)
 #######################
 
 itrax_join=function(list) {
-# list should be in the format "list(dataframe1, dataframe2, etc...)"
+# list should be in the format "list(core1 = dataframe1, core 2 = dataframe2, etc...)"
 
 # label the individual scans - this needs to iterate along the list called "list", e.g.
 # dataframe1$labels <- deparse(substitute(dataframe1))
 # dataframe2$labels <- deparse(substitute(dataframe2)) etc. etc.
 
-#addlabels=function(x){x$labels<-deparse(substitute(x))}
-#df <- lapply(list, addlabels)
-
-# stick them together
 require(dplyr)
+itrax_join=function(list){
+
+# label the data
+list <- lapply(names(list), function(i) within(list[[i]], {label <- i}))
+
+# join them
 df <- bind_rows(list)
 
-# sort the rows in order of depth
+# sort them by depth
 df <- df[with( df, order(depth) ) , ]
 
 return(df)
