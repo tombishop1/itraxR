@@ -1,8 +1,4 @@
-# itraxR
-#
-# Functions to manipulate Itrax data files
-# The following packages are required: analogue, chemometrics, Hmisc
-#
+# itraxR --- Functions to manipulate Itrax data files
 
 ###################
 ## ITRAX-IMPORT  ##
@@ -294,4 +290,147 @@ df <- bind_rows(list)
 df <- df[with( df, order(depth) ) , ]
 
 return(df)
+}
+
+#######################
+##    ITRAX-META     ##
+#######################
+
+# Function takes a document.txt file and parses it into a sensible format. 
+
+itrax_meta=function(datafile="document.txt"){
+
+# import the file
+paths <- read.table(datafile, header = TRUE, sep = "\t", nrows = 1)
+dates <- read.table(datafile, header = TRUE, sep = "\t", nrows = 1, skip = 2)
+parameters <- read.table(datafile, header = FALSE, sep = "\t", skip = 4, stringsAsFactors = FALSE)
+
+# housekeeping
+parameters[ , 1] <- as.character(parameters[ , 1])
+parameters[ , 3] <- as.character(parameters[ , 3])
+
+# move those ones that arn't in the right place
+stoprow <- c(parameters[8,3], as.numeric(parameters[8,4]), NA, NA)
+names(stoprow) <- colnames(parameters)
+xrfcurrent <- c("XRF current", parameters[9,4], NA, NA)
+names(xrfcurrent) <- colnames(parameters)
+opticalend <- c(parameters[11,3], parameters[11,4], NA, NA)
+names(opticalend) <- colnames(parameters)
+parameters <- rbind(parameters, stoprow, xrfcurrent, opticalend)
+
+# re-label the columns
+colnames(parameters) <- c("Parameter", "Value", "Unit")
+
+# cleanup and rename some things
+parameters[ , 4] <- NULL
+parameters[6, 3] <- "ON/OFF"
+parameters[9, 3] <- "kV"
+parameters[9, 1] <- "XRF voltage"
+parameters[10,3] <- "element"
+parameters[8, 3] <- "mm"
+parameters[19,3] <- "mm"
+parameters[20,3] <- "mA"
+parameters[21,3] <- "mm"
+parameters[11,3] <- "mm"
+parameters[1,1 ] <- "Rad. voltage"
+parameters[2,1 ] <- "Rad. current"
+parameters[3,1 ] <- "Rad. exposure"
+parameters[12,1] <- "Optical step size"
+
+# add the date
+date <- paste( as.character(dates[1,3]),"/",as.character(dates[1,2]),"/",as.character(dates[1,1]), sep="" )
+daterow <- c("Aquisition date", date, "dd/mm/yyyy")
+names(daterow) <- colnames(parameters)
+parameters <- rbind(parameters, daterow)
+
+# add the names
+samplename <- c("Sample name", as.character(paths[1,2]), "str")
+names(samplename) <- colnames(parameters)
+sectionname <- c("Section name", as.character(paths[1,3]), "str")
+names(sectionname) <- colnames(parameters)
+operatorname <- c("Operator name", as.character(paths[1,4]), "str")
+names(operatorname) <- colnames(parameters)
+  
+parameters <- rbind(parameters, samplename, sectionname, operatorname)
+
+# Sort it all into a sensible order
+sortingorder <- c( "Sample name", "Section name", "Aquisition date", "Operator name",
+                   "Tube", "Start coordinate", "Stop coordinate", "Step size", 
+                   "Optical Start", "Optical End", "Optical step size",
+                   "Rad. voltage", "Rad. current", "Rad. exposure", "line camera signal level", 
+                   "XRF", "XRF voltage", "XRF current", "XRF exp. time", 
+                   "Start temperature", "Stop temperature", "Start humidity", "Stop humidity", "Start vacuum", "Stop vacuum" )
+
+parameters <- as.data.frame(parameters[match(sortingorder, parameters$Parameter),], stringsAsFactors = TRUE)
+rownames(parameters) <- NULL
+
+# pass the data
+return(parameters)
+}
+
+#######################
+##   ITRAX-SECTION   ##
+#######################
+
+itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c( "Na", "Al", "Si", "Ca", "Ti", "Mn", "Fe", "Pb" )){
+# import the data  
+df <- dataframe
+  
+# rename the rows by depth 
+if("depth" %in% colnames(df)) {
+  rownames(df) <- round(df$depth)
+# or position
+} else if("position" %in% colnames(df)) {
+  rownames(df) <- round(df$position)
+} 
+
+# get rid of anything that isn't an element
+element = c("H", "He",
+             "Li", "Be", "B", "C", "N", "O", "F", "Ne",
+             "Na", "Mg", "Al", "Si", "P", "S", "Cl", 
+             # "Ar",
+             "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr",
+             "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe",
+             "Cs", "Ba", 
+             "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", 
+             "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn",
+             "Fr", "Ra", 
+             "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", 
+             "Lr", "Unq", "Unp", "Unh", "Uns", "Uno", "Une", "Unn")
+df <- df[ , which(names(df) %in% elements)]
+  
+# deal with zero values
+if(zeros=="addone") {
+  df <- df + 1
+} else if(zeros=="limit") {
+  df[df == 0] <- 0.001
+}  
+  
+# centered log ratio transform the data
+require(chemometrics) # could also use "compositions" package
+df <- clr(df)
+
+# perform a cluster analysis using Euclidian distances
+d <- dist(as.matrix(df))
+hc <- hclust(d, method = "ward.D2")
+
+# draw a dendrogram
+plot(hc)
+dev.new()
+
+# divide into groups
+groups <- cutree(hc, k=divisions)
+df$group <- as.data.frame(groups)
+
+# work out the largest contiguous group in each class
+
+# report the median depth of each of those largest contiguous groups
+
+# draw a picture
+require(ggplot2)
+p <- ggplot(df, aes(row.names(df), fill=as.factor(groups))) + geom_bar()
+print(p)
+
+# return a diagram showing the different clusters as a function of depth
+return(hc)
 }

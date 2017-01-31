@@ -19,7 +19,9 @@ dfb_meta <- read.table(fileb, nrows = datapos, header = FALSE, sep = "\t")
 #	return()
 #}
 
-# check the file for the mca_bin_width parameter (here, fixed at 19.26, but that doesn't seen quite right...)
+# set the keV / channel details - or is it some division of 19.26?
+kev_channel <- 0.01751420
+kev_offset <- 0.01061700
 
 # convert the channels into energies (kEV)
 dfa[ , 3] <- ( dfa[ , 1] * 19.26 ) / 1000
@@ -46,15 +48,15 @@ if (graph==TRUE) {
 	text(x = energylines, y = maxy, labels = energynames, col = "pink", cex = 0.75)	
 	
 	# plot the residuals
-	dev.new()
-	plot(dfc[ , 3], dfc[ , 2], type="l", xlab="Energy (kEV)", ylab="Difference (counts)", main="Difference in spectra")
+	# dev.new()
+	# plot(dfc[ , 3], dfc[ , 2], type="l", xlab="Energy (kEV)", ylab="Difference (counts)", main="Difference in spectra")
 
 	# add the Cr, Mo and W energy lines
-	abline(v = energylines, col = "red")
+	# abline(v = energylines, col = "red")
 
 	# add labels to those lines
-	maxy <- max(dfc[ , 2]) + 10
-	text(x = energylines, y = maxy, labels = energynames, col = "red", cex = 0.75)
+	# maxy <- max(dfc[ , 2]) + 10
+	# text(x = energylines, y = maxy, labels = energynames, col = "red", cex = 0.75)
 }
 
 return(dfc)
