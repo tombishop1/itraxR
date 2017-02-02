@@ -266,9 +266,9 @@ elements = c("H", "He",
   
 if(elementsonly==TRUE) {
   df <- df[ , which(names(df) %in% elements)]
-} else if(elements==FALSE){
+} else if(elementsonly==FALSE){
 } else{
-  stop('elements only must be true or false')
+  stop('elementsonly must be true or false')
 }
   
 # deal with zero values
@@ -483,7 +483,9 @@ if("depth" %in% colnames(df)) {
 # or position
 } else if("position" %in% colnames(df)) {
   rownames(df) <- round(df$position)
-} 
+} else{
+  stop('Neither depth nor position is present.')
+}
 
 # get rid of anything that isn't an element
 element = c("H", "He",
@@ -498,14 +500,23 @@ element = c("H", "He",
              "Fr", "Ra", 
              "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", 
              "Lr", "Unq", "Unp", "Unh", "Uns", "Uno", "Une", "Unn")
+# get rid of anything not in the list of elements above
+df <- df[ , which(names(df) %in% element)]
+
+# get rid of anything not in the specified list of elements
+if(!is.null(elements)){
 df <- df[ , which(names(df) %in% elements)]
+}else{}
   
 # deal with zero values
 if(zeros=="addone") {
   df <- df + 1
 } else if(zeros=="limit") {
   df[df == 0] <- 0.001
-}  
+} else{stop('zeros must be addone or limit')} 
+
+# deal with NA values
+df <- na.omit(df)
   
 # centered log ratio transform the data
 require(chemometrics) # could also use "compositions" package
@@ -521,11 +532,38 @@ dev.new()
 
 # divide into groups
 groups <- cutree(hc, k=divisions)
-df$group <- as.data.frame(groups)
+df$group <- groups
 
-# work out the largest contiguous group in each class
+# do a cluster analysis of each group individually
+sample_list <- sample_list <- c(1:as.numeric(divisions))
+# sample_list <- NA
+loop_group <- 1
 
-# report the median depth of each of those largest contiguous groups
+while( loop_group < divisions ){
+  
+  loop_d <- dist( as.matrix(df[ df$group == loop_group , ]) )
+  loop_hc <- hclust( loop_d, method="ward.D2" )
+  
+  # convert the index number to a depth label
+  loop_reorder <- data.frame(loop_hc$labels, loop_hc$order)
+  loop_reorder <- loop_reorder[order(loop_reorder$loop_hc.order),]
+
+  # pick the MIDDLE in each group
+  loop_centerpoint <- round(length(loop_reorder$loop_hc.labels) / 2)
+  
+  loop_center <- as.character(loop_reorder[loop_centerpoint,1])
+  
+ 
+  # append the depth or position of each of those samples to a list
+  sample_list[loop_group] <- loop_center
+  #sample_list <- c(sample_list, loop_center)
+  
+  loop_group <- loop_group + 1
+}
+
+sample_list <- sort(as.numeric(sample_list))
+
+print(sample_list)
 
 # draw a picture
 require(ggplot2)
@@ -534,9 +572,15 @@ print(p)
 
 # return a diagram showing the different clusters as a function of depth
 return(hc)
+#return(c("group"=df$group , "samples"=sample_list))
 }
 
+##########################
+## ITRAX-SPECTRACOMPARE ##
+##########################
+
 itrax_spectracompare=function(filea, fileb, datapos=30, graph=TRUE) {
+  # Compares two spectra - filea and fileb
   
   # check the files exist
   if (!file.exists(filea) | !file.exists(fileb)) {
