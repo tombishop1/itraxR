@@ -473,16 +473,29 @@ return(parameters)
 ##   ITRAX-SECTION   ##
 #######################
 
-itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c( "Na", "Al", "Si", "Ca", "Ti", "Mn", "Fe", "Pb" )){
+itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL), graph=TRUE){
+
+# this function returns the following:
+  # $samples - a list of suggested samples for analysis
+  # $depth OR $position depending on what's present
+  # $groups - the groups to go with $depth
+  
 # import the data  
-df <- dataframe
+# assert the dataframe exists and import it
+  if(is.data.frame(dataframe)){
+    df <- dataframe
+} else{
+    stop('Dataframe does not exist or object is not a dataframe.')
+}
   
 # rename the rows by depth 
 if("depth" %in% colnames(df)) {
   rownames(df) <- round(df$depth)
+  z_is <- "depth"
 # or position
 } else if("position" %in% colnames(df)) {
   rownames(df) <- round(df$position)
+  z_is <- "position"
 } else{
   stop('Neither depth nor position is present.')
 }
@@ -527,8 +540,11 @@ d <- dist(as.matrix(df))
 hc <- hclust(d, method = "ward.D2")
 
 # draw a dendrogram
+if(graph==TRUE){
 plot(hc)
 dev.new()
+} else if(graph==FALSE){
+} else{stop('graph must be true or false')}
 
 # divide into groups
 groups <- cutree(hc, k=divisions)
@@ -561,18 +577,31 @@ while( loop_group < divisions ){
   loop_group <- loop_group + 1
 }
 
+# sort the list of samples numerically for the sake of neatness
 sample_list <- sort(as.numeric(sample_list))
 
+# print the list for diagnostics
 print(sample_list)
 
 # draw a picture
+if(graph==TRUE){
 require(ggplot2)
 p <- ggplot(df, aes(row.names(df), fill=as.factor(groups))) + geom_bar()
 print(p)
+} else if(graph==FALSE){
+} else{stop('graph must be true or false')}
 
-# return a diagram showing the different clusters as a function of depth
-return(hc)
-#return(c("group"=df$group , "samples"=sample_list))
+# make a small table with the position OR depth, and put the groups there
+group_table <- as.data.frame(df$group)
+row.names(group_table) <- row.names(df)
+colnames(group_table) <- "group"
+
+if(z_is=="depth"){
+  return(list( "groups"=c(group_table$group), "depth"=c(row.names(df)), "samples"=c(sample_list) ) )
+} else if(z_is=="position"){
+  return(list( "groups"=c(group_table$group), "position"=c(row.names(df)), "samples"=c(sample_list) ) )  
+}
+
 }
 
 ##########################
