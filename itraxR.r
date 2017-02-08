@@ -541,8 +541,8 @@ hc <- hclust(d, method = "ward.D2")
 
 # draw a dendrogram
 if(graph==TRUE){
-plot(hc)
-dev.new()
+#plot(hc)
+#dev.new()
 } else if(graph==FALSE){
 } else{stop('graph must be true or false')}
 
@@ -692,4 +692,95 @@ itrax_spectracompare=function(filea, fileb, datapos=30, graph=TRUE) {
   }
   
   return(dfc)
+}
+
+##########################
+### ITRAX-RESTSPEC #######
+##########################
+
+# function for integrating raw xrf spectra and visualising the same
+itrax_restspectra <- function(foldername, datapos=30) {
+  
+  # read in a list of files
+  filenames <- dir(foldername, pattern="*.spe")
+  
+  # import them all
+  # need a way of appending the filename to the filenames for this to work
+  require(dplyr)
+  tables <- lapply(filenames, read.table, skip = datapos, header = TRUE)
+  
+  # import all the scan positions
+  depths <- lapply(filenames, read.table, skip = 6, nrows = 1, header = FALSE)
+
+  # label all the dataframes
+  names(tables) <- unname(sapply(depths, `[[`, 2))
+  
+  # make an array where x=position, y=channel, and colour=intensity
+  df <- unname(sapply(tables, `[[`, "content"))
+  
+  # label the cols and rows
+  colnames(df) <- unname(sapply(depths, `[[`, 2))
+  row.names(df) <- 1:1024 * (17.5 / 1000) # 17.5 the MCA bin width 
+  
+  # draw a raster
+  require(lattice)
+  levelplot(df)
+  
+  # but really we want to use ggplot?
+  #require(ggplot2)
+  melt_df <- melt(df)
+  #ggplot(melt_df, aes("Var1", "Var2", z= "value")) + theme_bw() + scale_fill_gradient(low="white", high="blue")
+  
+  # return the file for plotting
+  return(df)
+}
+
+##########################
+### ITRAX-RADIOGRAPH #####
+##########################
+
+# reads and plots radiographs, etc. 
+itrax_radiograph <- function(filename, ladder=NULL, ladder_position=NULL) {
+  
+  # read the radiograph
+  require(tiff)
+  rad <- readTIFF(filename)
+  
+  # define the ladder value measurements
+  # this is probably quite easy to automate if you know the positions in the matrix
+  ladder <- c()
+  
+  # define the "true" values for the ladder
+  true_ladder <- c(1:9)
+  
+  # calibration according to the ladder values
+  
+  # optionally, map the position variable to depth
+  
+  # print an image in greyscale
+  # some work needed on contrast adjustment
+  require(lattice)
+  levelplot(df)
+  
+  # return the image file for plotting
+  return(df)
+}
+
+##########################
+###### ITRAX-IMAGE #######
+##########################
+
+# reads and plots optical line scan images
+itrax_image <- function(filename) {
+  
+  # read the image
+  require(tiff)
+  img <- readTIFF(filename)
+  
+  # map the image to coring depth (optional?)
+  
+  # make contrast adjustments as appropriate
+  
+  # return the image file for plotting
+  return(df)
 }
