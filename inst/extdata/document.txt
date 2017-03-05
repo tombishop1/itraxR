@@ -1,0 +1,22 @@
+Base path:	Sample name:	Section name	User ID
+C:\Data\Name_240117_Mo_THB\WV17-2-D1	WV17-2-D1	WV17-2-D1	THB
+Year	Month	Day	Time
+2017	01	24	16
+Voltage	60	kV	
+Current	40	mA	
+Exposure time	450	ms	
+line camera signal level	571116	at 25 ms	
+Step size	2000	microns	
+XRF	ON		
+XRF exp. time	10	seconds	
+Start coordinate	27.3	Stop coordinate	1064.3
+XRF voltage and current	30	  	55
+Tube	Mo		
+Optical Start	0.1	Optical End	1102.9
+Step size	0.047	microns	
+Start temperature	26	°C	
+Start humidity	22	%	
+Start vacuum	-96.0	kPa	
+Stop temperature	27	°C	
+Stop humidity	21	%	
+Stop vacuum	-96.2	kPa	
