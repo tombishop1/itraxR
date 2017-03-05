@@ -3,10 +3,10 @@
 #' Performs and visualises principle component analysis data from Itrax result data
 #'
 #' @param dataframe pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"}
-#' @param elementsonly logical operator that if TRUE will only perform the analysis for elemental data
+#' @param elementsonly binary operator that if TRUE will only perform the analysis for elemental data
 #' @param zeros can be either "addone" or "limit" --- this defines what to do with zero values when normalisating. Limit uses 0.001 as the zero value, add one adds one to all data
-#' @param transform logical operator that if TRUE will center-log-transform the data
-#' @param diagrams logical operator, if TRUE will produce a graphical output
+#' @param transform binary operator that if TRUE will center-log-transform the data
+#' @param diagrams binary operator, if TRUE will produce a graphical output
 #'
 #' @return an ordination results object
 #'

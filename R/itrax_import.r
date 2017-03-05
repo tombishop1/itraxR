@@ -14,7 +14,7 @@
 #' @return a dataframe of the parsed Itrax data
 #'
 #' @examples
-#' itrax_import(datafile="result.txt", depth_top=0, trim_top=5, trim_bottom=5, graph=TRUE, export="resultdata.txt")
+#' itrax_import(datafile=system.file("extdata", "result.txt", package = "itraxR"), depth_top=0, trim_top=5, trim_bottom=5, graph=TRUE, export="resultdata.txt")
 #'
 #' @export
 

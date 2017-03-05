@@ -7,7 +7,7 @@
 #' @return a dataframe of all the input data
 #'
 #' @examples
-#' itrax_correlation( list(core1 = df1, core2 = df2, core3 = df3) )
+#' itrax_join( list(core1 = df1, core2 = df2, core3 = df3) )
 #'
 #' @export
 

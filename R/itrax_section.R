@@ -1,6 +1,19 @@
-#######################
-##   ITRAX-SECTION   ##
-#######################
+#' Cluster analysis and statistical grouping of Itrax data
+#'
+#' Performs a cluster analysis and automatic statistical grouping of parsed Itrax results data
+#'
+#' @param dataframe defines Itrax results data parsed using \code{"itrax_import()"} or \code{"itrax_join()"}
+#' @param divisions defines the number of sub-groups to divide the data into. Use this to define the number of samples for calibration.
+#' @param zeros can be either "addone" or "limit" --- this defines what to do with zero values when normalisating. Limit uses 0.001 as the zero value, add one adds one to all data
+#' @param elements an optional list of elements to include, otheriwse, all elements present are used
+#' @param graph a binary operator that if TRUE will produce a graphical representation of the results
+#'
+#' @return an object that includes the depth (or position) and the respective group, alongside a list of group center samples for choosing calibration samples
+#'
+#' @examples
+#' itrax_section( df )
+#'
+#' @export
 
 itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL), graph=TRUE){
 

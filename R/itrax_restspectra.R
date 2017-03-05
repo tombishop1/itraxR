@@ -1,6 +1,16 @@
-##########################
-### ITRAX-RESTSPEC #######
-##########################
+#' Make a spectrograph from raw Itrax data spectra files
+#'
+#' Parses a folder full of raw spectra files from an Itrax core scanner and produces a spectral graph of all the data by position
+#'
+#' @param foldername defines the folder where the spectra \code{"*.spe"} files are located
+#' @param datapos defines the row at which spectral data begins in the files
+#'
+#' @return a dataframe of all the spectral data
+#'
+#' @examples
+#' itrax_restspectra( foldername = "XRF Data", datapos = 37 )
+#'
+#' @export
 
 # function for integrating raw xrf spectra and visualising the same
 itrax_restspectra <- function(foldername, datapos=30) {

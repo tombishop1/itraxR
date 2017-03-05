@@ -10,13 +10,13 @@ itrax_ordination(dataframe, elementsonly = TRUE, zeros = "addone",
 \arguments{
 \item{dataframe}{pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"}}
 
-\item{elementsonly}{logical operator that if TRUE will only perform the analysis for elemental data}
+\item{elementsonly}{binary operator that if TRUE will only perform the analysis for elemental data}
 
 \item{zeros}{can be either "addone" or "limit" --- this defines what to do with zero values when normalisating. Limit uses 0.001 as the zero value, add one adds one to all data}
 
-\item{transform}{logical operator that if TRUE will center-log-transform the data}
+\item{transform}{binary operator that if TRUE will center-log-transform the data}
 
-\item{diagrams}{logical operator, if TRUE will produce a graphical output}
+\item{diagrams}{binary operator, if TRUE will produce a graphical output}
 }
 \value{
 an ordination results object
