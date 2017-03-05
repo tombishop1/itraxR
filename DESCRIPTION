@@ -8,3 +8,12 @@ Description: Parse, trim, join, visualise and analyse data from Itrax core scann
 License: CC-BY-NC-SA
 Encoding: UTF-8
 RoxygenNote: 6.0.1
+Imports:
+    chemometrics,
+    corrplot,
+    tiff,
+    analogue,
+    dplyr,
+    lattice,
+    data.table,
+    ggplot2

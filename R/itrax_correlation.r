@@ -66,8 +66,9 @@ itrax_correlation=function(dataframe, elementsonly=TRUE, zeros="addone", transfo
 
   # calculate centered log ratios for all elements in the original dataset
   if(transform==TRUE) {
-    require(chemometrics) # could also use "compositions" package
-    df <- clr(df)
+#    require(chemometrics) # could also use "compositions" package
+#    df <- clr(df)
+     df <- chemometrics::clr(df)
   } else if(transform==FALSE) {
   } else{
     stop('transform must be TRUE or FALSE')
@@ -79,9 +80,10 @@ itrax_correlation=function(dataframe, elementsonly=TRUE, zeros="addone", transfo
 
   # run diagrams
   if(diagrams==TRUE) {
-    require(corrplot)
+    #require(corrplot)
     dev.new()
-    corrplot.mixed(df_cor, lower="number", upper="color", order="AOE", number.cex=0.75 ) # and confidence levels to this
+    #corrplot.mixed(df_cor, lower="number", upper="color", order="AOE", number.cex=0.75 ) # and confidence levels to this
+    corrplot::corrplot.mixed(df_cor, lower="number", upper="color", order="AOE", number.cex=0.75 ) # and confidence levels to this
   } else if(diagrams==FALSE){
   } else{
     stop('diagrams must be TRUE or FALSE')

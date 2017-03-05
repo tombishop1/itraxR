@@ -20,13 +20,13 @@
 
 itrax_join=function(list){
 
-  require(dplyr)
+  #require(dplyr)
 
   # label the data
-  list <- lapply(names(list), function(i) within(list[[i]], {label <- i}))
+  list <- dplyr::lapply(names(list), function(i) within(list[[i]], {label <- i}))
 
   # join them
-  df <- bind_rows(list)
+  df <- dplyr::bind_rows(list)
 
   # sort them by depth
   df <- df[with( df, order(depth) ) , ]

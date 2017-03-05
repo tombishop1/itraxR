@@ -69,7 +69,7 @@ itrax_spectracompare=function(filea, fileb, datapos=37, graph=TRUE) {
   if (graph==TRUE) {
     # plot both spectra against one another
     # this should be done in ggplot
-    plot(dfa[ , 3], dfa[ , 2], type="l", col="blue", log="y", xlab = "Energy (kEV)", ylab = "Counts")
+    plot(dfa[ , 3], dfa[ , 2], type="l", col="blue", log="y", xlab = "Energy (keV)", ylab = "Counts")
     par(new=TRUE)
     plot(dfb[ , 3], dfb[ , 2], type="l", col="red", log="y", axes=FALSE, xlab="", ylab="")
     axis(1, at=c(1:20))

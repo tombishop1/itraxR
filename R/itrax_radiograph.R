@@ -6,8 +6,8 @@
 itrax_radiograph <- function(filename, ladder=NULL, ladder_position=NULL) {
 
   # read the radiograph
-  require(tiff)
-  rad <- readTIFF(filename)
+  #require(tiff)
+  rad <- tiff::readTIFF(filename)
 
   # define the ladder value measurements
   # this is probably quite easy to automate if you know the positions in the matrix
@@ -22,8 +22,8 @@ itrax_radiograph <- function(filename, ladder=NULL, ladder_position=NULL) {
 
   # print an image in greyscale
   # some work needed on contrast adjustment
-  require(lattice)
-  levelplot(df)
+  #require(lattice)
+  lattice::levelplot(df)
 
   # return the image file for plotting
   return(df)

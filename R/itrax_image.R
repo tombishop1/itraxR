@@ -7,7 +7,7 @@ itrax_image <- function(filename) {
 
   # read the image
   require(tiff)
-  img <- readTIFF(filename)
+  img <- tiff::readTIFF(filename)
 
   # map the image to coring depth (optional?)
 

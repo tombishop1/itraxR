@@ -66,8 +66,8 @@ itrax_ordination=function(dataframe, elementsonly=TRUE, zeros="addone", transfor
 
   # calculate centered log ratios for all elements in the original dataset
   if(transform==TRUE) {
-    require(chemometrics) # could also use "compositions" package
-    df <- clr(df)
+    #require(chemometrics) # could also use "compositions" package
+    df <- chemometrics::clr(df)
   } else if(transform==FALSE) {
   } else{
     stop('transform must be TRUE or FALSE')

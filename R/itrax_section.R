@@ -74,8 +74,8 @@ itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL)
   df <- na.omit(df)
 
   # centered log ratio transform the data
-  require(chemometrics) # could also use "compositions" package
-  df <- clr(df)
+  # require(chemometrics) # could also use "compositions" package
+  df <- chemometrics::clr(df)
 
   # perform a cluster analysis using Euclidian distances
   d <- dist(as.matrix(df))
@@ -127,8 +127,8 @@ itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL)
 
   # draw a picture
   if(graph==TRUE){
-    require(ggplot2)
-    p <- ggplot(df, aes(row.names(df), fill=as.factor(groups))) + geom_bar()
+    #require(ggplot2)
+    p <- ggplot2::ggplot(df, aes(row.names(df), fill=as.factor(groups))) + geom_bar()
     print(p)
   } else if(graph==FALSE){
   } else{stop('graph must be true or false')}

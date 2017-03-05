@@ -42,7 +42,7 @@ itrax_restspectra <- function(foldername, datapos=30) {
 
   # but really we want to use ggplot?
   #require(ggplot2)
-  melt_df <- melt(df)
+  melt_df <- data.table::melt(df)
   #ggplot(melt_df, aes("Var1", "Var2", z= "value")) + theme_bw() + scale_fill_gradient(low="white", high="blue")
 
   # return the file for plotting
