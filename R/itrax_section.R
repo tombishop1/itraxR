@@ -5,7 +5,7 @@
 #' @param dataframe defines Itrax results data parsed using \code{"itrax_import()"} or \code{"itrax_join()"}
 #' @param divisions defines the number of sub-groups to divide the data into. Use this to define the number of samples for calibration.
 #' @param zeros can be either "addone" or "limit" --- this defines what to do with zero values when normalisating. Limit uses 0.001 as the zero value, add one adds one to all data
-#' @param elements an optional list of elements to include, otheriwse, all elements present are used
+#' @param elements an optional list of elements to include, otherwise, all elements present are used
 #' @param graph a binary operator that if TRUE will produce a graphical representation of the results
 #'
 #' @return an object that includes the depth (or position) and the respective group, alongside a list of group center samples for choosing calibration samples
@@ -123,11 +123,11 @@ itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL)
   sample_list <- sort(as.numeric(sample_list))
 
   # print the list for diagnostics
-  print(sample_list)
+  # print(sample_list)
 
   # draw a picture
   if(graph==TRUE){
-    #require(ggplot2)
+    require(ggplot2)
     p <- ggplot2::ggplot(df, aes(row.names(df), fill=as.factor(groups))) + geom_bar()
     print(p)
   } else if(graph==FALSE){

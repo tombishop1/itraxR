@@ -81,9 +81,8 @@ itrax_correlation=function(dataframe, elementsonly=TRUE, zeros="addone", transfo
   # run diagrams
   if(diagrams==TRUE) {
     #require(corrplot)
-    dev.new()
     #corrplot.mixed(df_cor, lower="number", upper="color", order="AOE", number.cex=0.75 ) # and confidence levels to this
-    corrplot::corrplot.mixed(df_cor, lower="number", upper="color", order="AOE", number.cex=0.75 ) # and confidence levels to this
+    corrplot::corrplot.mixed(df_cor, lower="number", upper="color", order="FPC", number.cex=0.75 ) # and confidence levels to this
   } else if(diagrams==FALSE){
   } else{
     stop('diagrams must be TRUE or FALSE')

@@ -16,7 +16,7 @@ itrax_ordination(dataframe, elementsonly = TRUE, zeros = "addone",
 
 \item{transform}{binary operator that if TRUE will center-log-transform the data}
 
-\item{diagrams}{binary operator, if TRUE will produce a graphical output}
+\item{diagrams}{binary operator, if TRUE will produce a graphical output, if BIPLOT will only produce a biplot}
 }
 \value{
 an ordination results object

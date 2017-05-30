@@ -32,6 +32,6 @@ a dataframe of the parsed Itrax data
 Imports and parses data from a results file created by Q-Spec software, part of the Itrax core scanner.
 }
 \examples{
-itrax_import(datafile=system.file("extdata", "result.txt", package = "itraxR"), depth_top=0, trim_top=5, trim_bottom=5, graph=TRUE)
+itrax_import(datafile=system.file("extdata", "result.txt", package = "itraxR"), depth_top=0, trim_top=5, trim_bottom=5, graph=FALSE)
 
 }

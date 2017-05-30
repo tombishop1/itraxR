@@ -14,7 +14,7 @@
 #' @return a dataframe of the parsed Itrax data
 #'
 #' @examples
-#' itrax_import(datafile=system.file("extdata", "result.txt", package = "itraxR"), depth_top=0, trim_top=5, trim_bottom=5, graph=TRUE)
+#' itrax_import(datafile=system.file("extdata", "result.txt", package = "itraxR"), depth_top=0, trim_top=5, trim_bottom=5, graph=FALSE)
 #'
 #' @export
 
@@ -131,7 +131,7 @@ itrax_import=function(datafile="result.txt", depth_top=NULL, trim_top=NULL, trim
   }else{ylabel <- "Position (mm)"}
 
   if(graph==TRUE){
-    #require(analogue)
+    require(analogue)
     if(!is.null(depth_top)){ analogue::Stratiplot(df[-grep("depth|position",colnames(df))], df$depth, varTypes = "absolute",
                                         absolutesize = "1", strip = TRUE, ylab=as.character(ylabel)) }
     else{	analogue::Stratiplot(df[-grep("depth|position",colnames(df))], df$position, varTypes = "absolute",

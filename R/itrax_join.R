@@ -23,7 +23,7 @@ itrax_join=function(list){
   #require(dplyr)
 
   # label the data
-  list <- dplyr::lapply(names(list), function(i) within(list[[i]], {label <- i}))
+  list <- lapply(names(list), function(i) within(list[[i]], {label <- i}))
 
   # join them
   df <- dplyr::bind_rows(list)

@@ -1,6 +1,15 @@
-##########################
-### ITRAX-RADIOGRAPH #####
-##########################
+#' Import Itrax core-scanner radiograph file
+#'
+#' Imports and parses data from a results file created by Q-Spec software, part of the Itrax core scanner.
+#'
+#' @param datafile defines the name of the datafile to parse
+#'
+#' @return a matrix of the parsed Itrax radiograph
+#'
+#' @examples
+#' itrax_radiograph( filename=system.file( "extdata", "radiograph.tif", package = "itraxR" ) )
+#'
+#' @export
 
 # reads and plots radiographs, etc.
 itrax_radiograph <- function(filename, ladder=NULL, ladder_position=NULL) {
@@ -22,8 +31,9 @@ itrax_radiograph <- function(filename, ladder=NULL, ladder_position=NULL) {
 
   # print an image in greyscale
   # some work needed on contrast adjustment
-  #require(lattice)
-  lattice::levelplot(df)
+  # this work can be done using imagemagick::image_equalize(imagename) or maybe imagemagick::image_contrast()
+  # require(lattice)
+  # lattice::levelplot(df)
 
   # return the image file for plotting
   return(df)

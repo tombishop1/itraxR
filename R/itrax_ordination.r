@@ -6,7 +6,7 @@
 #' @param elementsonly binary operator that if TRUE will only perform the analysis for elemental data
 #' @param zeros can be either "addone" or "limit" --- this defines what to do with zero values when normalisating. Limit uses 0.001 as the zero value, add one adds one to all data
 #' @param transform binary operator that if TRUE will center-log-transform the data
-#' @param diagrams binary operator, if TRUE will produce a graphical output
+#' @param diagrams binary operator, if TRUE will produce a graphical output, if BIPLOT will only produce a biplot
 #'
 #' @return an ordination results object
 #'
@@ -75,7 +75,7 @@ itrax_ordination=function(dataframe, elementsonly=TRUE, zeros="addone", transfor
 
   # perform a principle components analysis of the original dataset and display the eigenvalues
   df_pca <- prcomp(na.omit(df))
-  print(summary(df_pca$rotation))
+  # print(summary(df_pca$rotation))
 
   # plot an ordination diagram of axes 1 and 2, with sample and variable scores, to explore the data
   # then plot the first axis by position
@@ -88,9 +88,11 @@ itrax_ordination=function(dataframe, elementsonly=TRUE, zeros="addone", transfor
     dev.new()
     barplot(sort(df_pca$rotation[ , "PC1"]), horiz=TRUE, names.arg=row.names(sort(df_pca$rotation[ , "PC1"])),
             cex.names=0.6, xlab="PC1")
+  } else if(diagrams=="BIPLOT"){
+    biplot(df_pca)
   } else if(diagrams==FALSE){
   } else{
-    stop('diagrams must be TRUE or FALSE')
+    stop('diagrams must be TRUE or FALSE, or BIPLOT')
   }
 
   return(df_pca)
