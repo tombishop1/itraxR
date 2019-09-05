@@ -52,6 +52,7 @@ itrax_meta=function(datafile="document.txt"){
   parameters[20,3] <- "mA"
   parameters[21,3] <- "mm"
   parameters[11,3] <- "mm"
+  parameters[12,3] <- "mm"  #yes I know it is labelled as microns in the file, but it is wrong!
   parameters[1,1 ] <- "Rad. voltage"
   parameters[2,1 ] <- "Rad. current"
   parameters[3,1 ] <- "Rad. exposure"

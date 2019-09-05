@@ -93,7 +93,7 @@ itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL)
   df$group <- groups
 
   # do a cluster analysis of each group individually
-  sample_list <- sample_list <- c(1:as.numeric(divisions))
+  sample_list <- c(1:as.numeric(divisions))
   # sample_list <- NA
   loop_group <- 1
 

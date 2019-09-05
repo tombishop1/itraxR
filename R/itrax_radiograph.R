@@ -7,34 +7,25 @@
 #' @return a matrix of the parsed Itrax radiograph
 #'
 #' @examples
-#' itrax_radiograph( filename=system.file( "extdata", "radiograph.tif", package = "itraxR" ) )
+#' itrax_radiograph()
 #'
 #' @export
 
 # reads and plots radiographs, etc.
-itrax_radiograph <- function(filename, ladder=NULL, ladder_position=NULL) {
+itrax_radiograph <- function(filename = "radiograph.raw", metadata = "document.txt") {
 
   # read the radiograph
-  #require(tiff)
-  rad <- tiff::readTIFF(filename)
+  df <- t(read.delim(filename, header = FALSE))
 
-  # define the ladder value measurements
-  # this is probably quite easy to automate if you know the positions in the matrix
-  ladder <- c()
+  # read the metadata
+  metadata <- itrax_meta(metadata)
 
-  # define the "true" values for the ladder
-  true_ladder <- c(1:9)
+  # generate the row names
+  row.names(df) <- seq(from=as.numeric(metadata[6,2]), to=as.numeric(metadata[7,2]), by=as.numeric(metadata[8,2])/1000)
 
-  # calibration according to the ladder values
+  # generate the row names
+  colnames(df) <- seq(from=0.02, to=16, by=0.02) # because one pixel is 20 microns
 
-  # optionally, map the position variable to depth
-
-  # print an image in greyscale
-  # some work needed on contrast adjustment
-  # this work can be done using imagemagick::image_equalize(imagename) or maybe imagemagick::image_contrast()
-  # require(lattice)
-  # lattice::levelplot(df)
-
-  # return the image file for plotting
+  #generate the return object
   return(df)
 }

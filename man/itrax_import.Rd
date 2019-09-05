@@ -4,9 +4,9 @@
 \alias{itrax_import}
 \title{Import Itrax core-scanner result file}
 \usage{
-itrax_import(datafile = "result.txt", depth_top = NULL, trim_top = NULL,
-  trim_bottom = NULL, na_validity = TRUE, parameters = "SOME",
-  graph = FALSE, export = NULL)
+itrax_import(datafile = "result.txt", depth_top = NULL,
+  trim_top = NULL, trim_bottom = NULL, na_validity = TRUE,
+  parameters = "SOME", graph = FALSE, export = NULL)
 }
 \arguments{
 \item{datafile}{defines the name of the datafile to parse}

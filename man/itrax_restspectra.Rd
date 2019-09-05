@@ -4,7 +4,7 @@
 \alias{itrax_restspectra}
 \title{Make a spectrograph from raw Itrax data spectra files}
 \usage{
-itrax_restspectra(foldername, datapos = 30)
+itrax_restspectra(foldername = "XRF data", datapos = 30)
 }
 \arguments{
 \item{foldername}{defines the folder where the spectra \code{"*.spe"} files are located}

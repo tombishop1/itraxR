@@ -1,28 +1,29 @@
-#' Import Itrax core-scanner RGB image file
+#' Estimate Munsell colour from an Itrax scan
 #'
-#' Imports and parses an image file from an Itrax core-scanner.
+#' Estimates Munsell colour from a calibrated Itrax scan, or if using a Munsellator block, performs the calibration as well.
 #'
 #' @param filename defines the name of the datafile to parse
+#' @param metadata defines the relating metadata
 #'
-#' @return a matrix of the parsed Itrax image
+#' @return a matrix of RGB values
 #'
 #' @examples
-#' itrax_image( filename=system.file( "extdata", "optical.tif", package = "itraxR" ) )
+#' itrax_image()
 #'
 #' @export
+#'
+itrax_image <- function(filename, metadata = "document.txt") {
 
-
-# reads and plots optical line scan images
-itrax_image <- function(filename) {
-
-  # read the image
+  # load the image
   require(tiff)
-  img <- tiff::readTIFF(filename)
+  df <- readTIFF(filename)
 
-  # map the image to coring depth (optional?)
+  # load the metadata
+  metadata <- itrax_meta(metadata)
 
-  # make contrast adjustments as appropriate
+  # generate the positions on the row
+  row.names(df) <- seq(from=0, to=as.numeric(metadata[10,2]), by=as.numeric(metadata[11,2]))
 
-  # return the image file for plotting
+  # generate the return
   return(df)
 }

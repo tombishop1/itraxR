@@ -4,9 +4,16 @@
 \alias{itrax_munsell}
 \title{Estimate Munsell colour from an Itrax scan}
 \usage{
-itrax_munsell(filename, scanwidth = 300, munsellator = FALSE)
+itrax_munsell(filename, scanwidth = 10, munsellator = FALSE,
+  intervals = "xrf")
 }
 \arguments{
+\item{scanwidth}{defines the swath width (in mm) to use to generate Munsell colours. This is to remove any core containers or distortion at the edges}
+
+\item{munsellator}{set to TRUE if you are using a Munsellator calibration device. If not, you must supply a colour calibrated image or the output will be nonsense}
+
+\item{intervals}{this is the depth-wise averaging interval. By default it parses the document.txt metadata file and sets this interval equal to the XRF scan interval, but you can supply a figure.}
+
 \item{datafile}{defines the name of the datafile to parse}
 }
 \value{

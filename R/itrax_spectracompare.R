@@ -56,11 +56,13 @@ itrax_spectracompare=function(filea, fileb, datapos=37, graph=TRUE) {
     kev_channel <- as.numeric(dfa_meta["mca_bin_width", 1])
     kev_channel <- kev_channel / 1000 # convert to KeV
   } else { stop('There is a bin width mis-match.')  }
-  # kev_channel <- 0.0175 ...normally
+
+  kev_channel <- 0.01751420 * 1.027
+
 
   # convert the channels into energies (kEV)
-  dfa[ , 3] <- dfa$channel * kev_channel
-  dfb[ , 3] <- dfb$channel * kev_channel
+  dfa[ , 3] <- (dfa$channel * kev_channel) +- 0.01061700 #- 1.2#- (as.numeric(dfa_meta["trigger_threshold",1])/1000)
+  dfb[ , 3] <- (dfb$channel * kev_channel) +- 0.01061700 #- 1.2#- (as.numeric(dfa_meta["trigger_threshold",1])/1000)
 
   # subtract one spectra from the other
   dfc <- dfb
@@ -69,14 +71,14 @@ itrax_spectracompare=function(filea, fileb, datapos=37, graph=TRUE) {
   if (graph==TRUE) {
     # plot both spectra against one another
     # this should be done in ggplot
-    plot(dfa[ , 3], dfa[ , 2], type="l", col="blue", log="y", xlab = "Energy (keV)", ylab = "Counts")
+    plot(dfa[ , 3], dfa[ , 2], type="l", col="blue", log="y", xlab = "Energy (KeV)", ylab = "Counts")
     par(new=TRUE)
     plot(dfb[ , 3], dfb[ , 2], type="l", col="red", log="y", axes=FALSE, xlab="", ylab="")
     axis(1, at=c(1:20))
 
     # add the Cr, Mo and W energy lines
-    energynames=list("Cr Ka", "Cr Ka", "Cr Kb1", "Mo Ka", "Mo Ka", "Mo Kb", "W La1"  )
-    energylines=list(5.41472, 5.405509, 5.95671, 17.47934, 17.3743, 19.6083, 8.3976)
+    energynames=list( "Mo Ka1", "Mo Ka2", "Fe Ka1", "Fe Ka2", "Fe Kb1" )
+    energylines=list( 17.479, 17.374, 6.40384, 6.39084, 7.05798 )
     #energynames=list("Fe", "Fe", "Fe", "Cr")
     #energylines=list(6.40384, 6.39084, 7.0579, 5.411)
     abline(v = energylines, col = "pink")

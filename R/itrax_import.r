@@ -18,6 +18,8 @@
 #'
 #' @export
 
+# BUG! If the trims ae different, there is a fatal error
+
 itrax_import=function(datafile="result.txt", depth_top=NULL, trim_top=NULL, trim_bottom=NULL, na_validity=TRUE,
                       parameters="SOME", graph=FALSE, export=NULL) {
 
@@ -56,7 +58,7 @@ itrax_import=function(datafile="result.txt", depth_top=NULL, trim_top=NULL, trim
                "Lr", "Unq", "Unp", "Unh", "Uns", "Uno", "Une", "Unn")
 
   # a list of other useful parameters
-  others = c("position..mm.", "sample.surface", "MSE", "cps", "validity")
+  others = c("position..mm.", "sample.surface", "MSE", "cps", "validity", "Mo.inc", "Mo.coh")
 
   # remove parameters that aren't of interest
   if(parameters=="SOME"){

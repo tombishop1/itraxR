@@ -2,20 +2,22 @@
 % Please edit documentation in R/itrax_image.r
 \name{itrax_image}
 \alias{itrax_image}
-\title{Import Itrax core-scanner RGB image file}
+\title{Estimate Munsell colour from an Itrax scan}
 \usage{
-itrax_image(filename)
+itrax_image(filename, metadata = "document.txt")
 }
 \arguments{
 \item{filename}{defines the name of the datafile to parse}
+
+\item{metadata}{defines the relating metadata}
 }
 \value{
-a matrix of the parsed Itrax image
+a matrix of RGB values
 }
 \description{
-Imports and parses an image file from an Itrax core-scanner.
+Estimates Munsell colour from a calibrated Itrax scan, or if using a Munsellator block, performs the calibration as well.
 }
 \examples{
-itrax_image( filename=system.file( "extdata", "optical.tif", package = "itraxR" ) )
+itrax_image()
 
 }
