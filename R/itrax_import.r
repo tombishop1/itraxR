@@ -58,7 +58,7 @@ itrax_import=function(datafile="result.txt", depth_top=NULL, trim_top=NULL, trim
                "Lr", "Unq", "Unp", "Unh", "Uns", "Uno", "Une", "Unn")
 
   # a list of other useful parameters
-  others = c("position..mm.", "sample.surface", "MSE", "cps", "validity", "Mo.inc", "Mo.coh")
+  others = c("position..mm.", "sample.surface", "MSE", "cps", "validity", "Mo.inc", "Mo.coh", "Cr.inc", "Cr.coh")
 
   # remove parameters that aren't of interest
   if(parameters=="SOME"){
