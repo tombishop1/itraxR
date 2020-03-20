@@ -4,8 +4,7 @@
 \alias{itrax_radiograph_calibrate}
 \title{Import Itrax core-scanner radiograph file}
 \usage{
-itrax_radiograph_calibrate(filename, ladder = NULL,
-  ladder_position = NULL)
+itrax_radiograph_calibrate(filename, ladder = NULL, ladder_position = NULL)
 }
 \arguments{
 \item{datafile}{defines the name of the datafile to parse}

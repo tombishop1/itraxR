@@ -20,7 +20,7 @@
 
 itrax_join=function(list){
 
-  #require(dplyr)
+  require(dplyr)
 
   # label the data
   list <- lapply(names(list), function(i) within(list[[i]], {label <- i}))

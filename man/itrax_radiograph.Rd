@@ -4,8 +4,7 @@
 \alias{itrax_radiograph}
 \title{Import Itrax core-scanner radiograph file}
 \usage{
-itrax_radiograph(filename = "radiograph.raw",
-  metadata = "document.txt")
+itrax_radiograph(filename = "radiograph.raw", metadata = "document.txt")
 }
 \arguments{
 \item{datafile}{defines the name of the datafile to parse}

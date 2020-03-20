@@ -4,8 +4,7 @@
 \alias{itrax_munsell}
 \title{Estimate Munsell colour from an Itrax scan}
 \usage{
-itrax_munsell(filename, scanwidth = 10, munsellator = FALSE,
-  intervals = "xrf")
+itrax_munsell(filename, scanwidth = 10, munsellator = FALSE, intervals = "xrf")
 }
 \arguments{
 \item{scanwidth}{defines the swath width (in mm) to use to generate Munsell colours. This is to remove any core containers or distortion at the edges}

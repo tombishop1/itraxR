@@ -4,8 +4,13 @@
 \alias{itrax_section}
 \title{Cluster analysis and statistical grouping of Itrax data}
 \usage{
-itrax_section(dataframe, divisions = 30, zeros = "addone",
-  elements = c(NULL), graph = TRUE)
+itrax_section(
+  dataframe,
+  divisions = 30,
+  zeros = "addone",
+  elements = c(NULL),
+  graph = TRUE
+)
 }
 \arguments{
 \item{dataframe}{defines Itrax results data parsed using \code{"itrax_import()"} or \code{"itrax_join()"}}

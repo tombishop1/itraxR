@@ -4,8 +4,13 @@
 \alias{itrax_correlation}
 \title{Calculate a correlation matrix for Itrax result data}
 \usage{
-itrax_correlation(dataframe, elementsonly = TRUE, zeros = "addone",
-  transform = TRUE, diagrams = TRUE)
+itrax_correlation(
+  dataframe,
+  elementsonly = TRUE,
+  zeros = "addone",
+  transform = TRUE,
+  diagrams = TRUE
+)
 }
 \arguments{
 \item{dataframe}{defines the name of the dataframe to reduce --- this should have been imported using \code{"itrax_import()"} or \code{"itrax_join()"}}

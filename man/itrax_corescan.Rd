@@ -4,11 +4,16 @@
 \alias{itrax_corescan}
 \title{Import an Itrax Scan Object}
 \usage{
-itrax_corescan(image = "WV17-2-D1_rgb_16 bit.tif",
-  imagemetadata = "document.txt", radiograph = "radiograph.raw",
-  radiographmetadata = "document.txt", xrf = "result.txt",
-  xrfmetadata = "document.txt", spectra = "XRF data",
-  settings = "settings_240117.dfl")
+itrax_corescan(
+  image = "WV17-2-D1_rgb_16 bit.tif",
+  imagemetadata = "document.txt",
+  radiograph = "radiograph.raw",
+  radiographmetadata = "document.txt",
+  xrf = "result.txt",
+  xrfmetadata = "document.txt",
+  spectra = "XRF data",
+  settings = "settings_240117.dfl"
+)
 }
 \arguments{
 \item{image}{name of the image file}

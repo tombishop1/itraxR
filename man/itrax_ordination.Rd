@@ -4,8 +4,13 @@
 \alias{itrax_ordination}
 \title{Principle Component Analysis on Itrax scan data}
 \usage{
-itrax_ordination(dataframe, elementsonly = TRUE, zeros = "addone",
-  transform = TRUE, diagrams = TRUE)
+itrax_ordination(
+  dataframe,
+  elementsonly = TRUE,
+  zeros = "addone",
+  transform = TRUE,
+  diagrams = TRUE
+)
 }
 \arguments{
 \item{dataframe}{pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"}}
