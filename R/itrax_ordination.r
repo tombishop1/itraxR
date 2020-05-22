@@ -25,14 +25,15 @@ itrax_ordination=function(dataframe, elementsonly=TRUE, zeros="addone", transfor
   }
 
   # rename the rows
-  if("depth" %in% colnames(df)) {
-    rownames(df) <- round(df$depth)
-    labels <- "Depth (mm)"
-  } else{
-    df$position <- as.numeric(df$position)
-    rownames(df) <- df$position
-    labels <- "Position (mm)"
-  }
+#  if("depth" %in% colnames(df)) {
+#    rownames(df) <- round(df$depth)
+#    labels <- "Depth (mm)"
+#  } else{
+#    df$position <- as.numeric(df$position)
+#    rownames(df) <- df$position
+#    labels <- "Position (mm)"
+#  }
+  rownames(df) <- seq(from = 1, length.out = dim(df)[1])
 
   # get rid of anything that isn't an element
   elements = c("H", "He",
