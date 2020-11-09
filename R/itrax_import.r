@@ -17,6 +17,7 @@ itrax_import <- function(filename = "Results.txt", depth_top = NA, trim_top = 0,
 
   require(dplyr)
   require(janitor)
+  require(readr)
 
   elements <- c( "H", "He",
                  "Li", "Be", "B" , "C" , "N", "O", "F" , "Ne",
