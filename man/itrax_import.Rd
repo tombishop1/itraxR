@@ -5,40 +5,27 @@
 \title{Import Itrax core-scanner result file}
 \usage{
 itrax_import(
-  datafile = "result.txt",
-  depth_top = NULL,
-  trim_top = NULL,
-  trim_bottom = NULL,
-  na_validity = TRUE,
-  parameters = "SOME",
-  graph = FALSE,
-  export = NULL
+  filename = "Results.txt",
+  depth_top = NA,
+  trim_top = 0,
+  trim_bottom = 0,
+  parameters = "some"
 )
 }
 \arguments{
-\item{datafile}{defines the name of the datafile to parse}
-
 \item{depth_top}{defines the coring in depth of the top of the core, in mm}
 
 \item{trim_top}{defines the length of any trimming required of data at the top of the core, in mm}
 
 \item{trim_bottom}{defines the length of any trimming required at the bottom of the core, in mm}
 
-\item{na_validity}{binary operator that defines whether to set all invalid data to NA}
+\item{parameters}{one of all (leave all parameters), some (remove some less useful parameters)}
 
-\item{parameters}{one of ALL (leave all parameters), SOME (remove some less useful parameters), or ELEMENTS to leave only elemental data}
-
-\item{graph}{binary operator that defines whether a graphical output should be produced}
-
-\item{export}{defines the name of a text file if an output file should be produced}
+\item{datafile}{defines the name of the datafile to parse}
 }
 \value{
-a dataframe of the parsed Itrax data
+a tibble of the parsed Itrax data
 }
 \description{
 Imports and parses data from a results file created by Q-Spec software, part of the Itrax core scanner.
-}
-\examples{
-itrax_import("result.txt"), depth_top=0, trim_top=5, trim_bottom=5, graph=FALSE)
-
 }
