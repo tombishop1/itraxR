@@ -16,6 +16,6 @@ a matrix of the parsed Itrax radiograph
 Imports and parses data from a results file created by Q-Spec software, part of the Itrax core scanner.
 }
 \examples{
-itrax_radiograph( filename=system.file( "extdata", "radiograph.tif", package = "itraxR" ) )
+itrax_radiograph( "radiograph.tif" )
 
 }

@@ -17,6 +17,6 @@ a dataframe of all the parsed input data
 Parses the \code{"document.txt files"} generated from Itrax core scanners
 }
 \examples{
-itrax_meta(system.file("extdata", "document.txt", package = "itraxR"))
+itrax_meta("document.txt")
 
 }

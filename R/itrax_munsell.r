@@ -10,7 +10,7 @@
 #' @return a matrix of RGB values and munsell colours
 #'
 #' @examples
-#' itrax_munsell( filename=system.file( "extdata", "optical.tif", package = "itraxR" ) )
+#' itrax_munsell("optical.tif" )
 #'
 #' @export
 

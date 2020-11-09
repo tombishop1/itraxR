@@ -22,6 +22,6 @@ a matrix of RGB values and munsell colours
 Estimates Munsell colour from a calibrated Itrax scan, or if using a Munsellator block, performs the calibration as well.
 }
 \examples{
-itrax_munsell( filename=system.file( "extdata", "optical.tif", package = "itraxR" ) )
+itrax_munsell("optical.tif" )
 
 }

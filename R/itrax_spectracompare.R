@@ -10,7 +10,7 @@
 #' @return returns a dataframe of the difference between the two
 #'
 #' @examples
-#' itrax_spectracompare(filea = system.file("extdata", "a.spe", package = "itraxR"), fileb = system.file("extdata", "b.spe", package = "itraxR"))
+#' itrax_spectracompare("a.spe", "b.spe" )
 #'
 #' @export
 

@@ -7,7 +7,7 @@
 #' @return a dataframe of all the parsed input data
 #'
 #' @examples
-#' itrax_meta(system.file("extdata", "document.txt", package = "itraxR"))
+#' itrax_meta("document.txt")
 #'
 #' @export
 

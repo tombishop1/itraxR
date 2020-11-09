@@ -7,7 +7,7 @@
 #' @return a matrix of the parsed Itrax radiograph
 #'
 #' @examples
-#' itrax_radiograph( filename=system.file( "extdata", "radiograph.tif", package = "itraxR" ) )
+#' itrax_radiograph( "radiograph.tif" )
 #'
 #' @export
 
