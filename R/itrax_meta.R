@@ -29,7 +29,7 @@ itrax_meta=function(datafile="document.txt"){
   parameters[ , 1] <- as.character(parameters[ , 1])
   parameters[ , 3] <- as.character(parameters[ , 3])
 
-  # move those ones that arn't in the right place
+  # move those ones that aren't in the right place
   stoprow <- c(parameters[8,3], as.numeric(parameters[8,4]), NA, NA)
   names(stoprow) <- colnames(parameters)
   xrfcurrent <- c("XRF current", parameters[9,4], NA, NA)
