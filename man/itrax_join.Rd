@@ -7,16 +7,11 @@
 itrax_join(list)
 }
 \arguments{
-\item{list}{a list of dataframes that are parsed Itrax result files --- this should have been imported using \code{"itrax_import()"} and must have a depth variable present
-#'}
+\item{list}{a list of dataframes that are parsed Itrax result files --- this should have been imported using \code{"itrax_import()"} and must have a depth variable present. This should take the form \code{"list(core1 = core1, core2 = core2)"}}
 }
 \value{
-a dataframe of all the input data
+a tibble of all the input data
 }
 \description{
 Join two or more Itrax datasets that have been parsed using \code{"itrax_import()"}
-}
-\examples{
-itrax_join( list(core1 = df1, core2 = df2, core3 = df3) )
-
 }
