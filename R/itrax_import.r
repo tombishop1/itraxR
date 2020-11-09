@@ -15,7 +15,7 @@
 
 itrax_import <- function(filename = "Results.txt", depth_top = NA, trim_top = 0, trim_bottom = 0, parameters = "some"){
 
-  require(tidyverse)
+  require(dplyr)
   require(janitor)
 
   elements <- c( "H", "He",
