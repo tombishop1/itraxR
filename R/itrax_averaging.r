@@ -57,5 +57,5 @@ itrax_averaging = function( dataframe, interval, fun = mean ) {
   }else if(position_subs==FALSE){
   }
 
-  return(as.tibble(df_avg))
+  return(as_tibble(df_avg))
 }
