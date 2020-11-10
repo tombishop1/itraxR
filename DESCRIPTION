@@ -7,7 +7,7 @@ Maintainer: Thomas Bishop <tombishopemail@gmail.com>
 Description: Parse, trim, join, visualise and analyse data from Itrax core scanners.
 License: CC-BY-NC-SA
 Encoding: UTF-8
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Imports:
     chemometrics,
     corrplot,

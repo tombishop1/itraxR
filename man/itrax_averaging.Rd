@@ -4,18 +4,20 @@
 \alias{itrax_averaging}
 \title{Reduce size of Itrax result data}
 \usage{
-itrax_averaging(dataframe, interval)
+itrax_averaging(dataframe, interval, fun = mean)
 }
 \arguments{
 \item{dataframe}{defines the name of the dataframe to reduce --- this should have been imported using \code{"itrax_import()"}}
 
 \item{interval}{defines the intervals at which to resample, in mm.}
+
+\item{fun}{defines the function to reduce the data by. Default is mean, but can be any appropriate function (e.g. sd).}
 }
 \value{
 a dataframe of the averaged Itrax data
 }
 \description{
-Resamples Itrax results files into smaller averaged ranges
+Resamples Itrax results files into smaller averaged ranges. Note that the labels column, if present, will need to be rebuilt.
 }
 \examples{
 itrax_averaging(df, interval = 10)

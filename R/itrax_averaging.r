@@ -1,9 +1,10 @@
 #' Reduce size of Itrax result data
 #'
-#' Resamples Itrax results files into smaller averaged ranges
+#' Resamples Itrax results files into smaller averaged ranges. Note that the labels column, if present, will need to be rebuilt.
 #'
 #' @param dataframe defines the name of the dataframe to reduce --- this should have been imported using \code{"itrax_import()"}
 #' @param interval  defines the intervals at which to resample, in mm.
+#' @param fun       defines the function to reduce the data by. Default is mean, but can be any appropriate function (e.g. sd).
 #'
 #' @return a dataframe of the averaged Itrax data
 #'
@@ -12,19 +13,16 @@
 #'
 #' @export
 
-itrax_averaging=function(dataframe, interval) {
-
-  # dataframe     pass the name of a dataframe parsed using itrax_import
-  # interval      pass the size of the interval in mm
+itrax_averaging = function( dataframe, interval, fun = mean ) {
 
   # assert the dataframe exists and import it
   if(is.data.frame(dataframe)){
-    df <- dataframe
+    df <- as.data.frame(dataframe)
   } else{
     stop('Dataframe does not exist or object is not a dataframe.')
   }
 
-  # check if depths are present and subsistute position if not
+  # check if depths are present and substitute position if not
   if("depth" %in% colnames(df)) {
     position_subs <- FALSE
   } else if("position" %in% colnames(df)){
@@ -44,7 +42,7 @@ itrax_averaging=function(dataframe, interval) {
   interval <- round(interval)
 
   # perform the binning operation
-  df_avg          <- aggregate(df,list(rep(1:(length(df$depth)%/%interval+1),each=interval,len=length(df$depth))),mean)[-1]
+  df_avg          <- aggregate(df,list(rep(1:(length(df$depth)%/%interval+1),each=interval,len=length(df$depth))),fun)[-1]
   df_avg$depthmin <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%interval+1),each=interval,len=length(df$depth))),min)$x
   df_avg$depthmax <- aggregate(df$depth,list(rep(1:(length(df$depth)%/%interval+1),each=interval,len=length(df$depth))),max)$x
 
@@ -59,5 +57,5 @@ itrax_averaging=function(dataframe, interval) {
   }else if(position_subs==FALSE){
   }
 
-  return(df_avg)
+  return(as.tibble(df_avg))
 }
