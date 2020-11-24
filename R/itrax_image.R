@@ -41,16 +41,16 @@ itrax_image <- function(file = "optical.tif",
     require(grid)
     print(ggplot() +
       ylim(rev(as.numeric(meta[6:7, 2]))) +
-      labs(y = "Position [mm]") +
+      scale_x_continuous(limits = c(0, (((as.numeric(meta[7, 2]) - as.numeric(meta[6, 2])) / dim(image)[1]) * dim(image)[2]))) +
+      labs(y = "Position [mm]", x = "[mm]") +
       annotation_custom(rasterGrob(image,
                                    width  = unit(1, "npc"),
                                    height = unit(1, "npc")),
                         ymax = as.numeric(meta[7, 2])/-1,
                         ymin = as.numeric(meta[6, 2])/-1,
                         xmin = 0,
-                        xmax = ((as.numeric(foo$meta[2,2]) - as.numeric(foo$meta[1,2])) / dim(foo$image)[1]) * dim(foo$image)[2]) +
-       coord_fixed(ratio = dim(image)[2]/dim(image)[1])
-      )
+                        xmax = (((as.numeric(meta[7, 2]) - as.numeric(meta[6, 2])) / dim(image)[1]) * dim(image)[2])
+      ))
  }
 
   return(list(image = image,
