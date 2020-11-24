@@ -1,29 +1,61 @@
-#' Estimate Munsell colour from an Itrax scan
+#' Read an Itrax Image File
 #'
-#' Estimates Munsell colour from a calibrated Itrax scan, or if using a Munsellator block, performs the calibration as well.
+#'  Reads an Itrax image file and trims it according to the metadata provided.
 #'
 #' @param filename defines the name of the datafile to parse
 #' @param metadata defines the relating metadata
+#' @param plot     would you like to create a plot as a side-effect?
 #'
-#' @return a matrix of RGB values
+#' @return a matrix of RGB values, and the relevant data from the metadata file relating to the image.
+#' Also computes the aspect ratio of the image.
 #'
 #' @examples
-#' itrax_image()
+#' itrax_image(file = "optical.tif", meta = "document.txt", plot = TRUE)
 #'
 #' @export
 #'
-itrax_image <- function(filename, metadata = "document.txt") {
+itrax_image <- function(file = "optical.tif",
+                        meta = "document.txt",
+                        plot = FALSE){
 
-  # load the image
+  # import the image and metadata files
   require(tiff)
-  df <- readTIFF(filename)
+  image <- readTIFF(file)
+  meta  <- itrax_meta(meta)
 
-  # load the metadata
-  metadata <- itrax_meta(metadata)
+  # label the image depth
+  image_depth <- rev(seq(from       = as.numeric(meta[ 9, 2]),
+                         to         = as.numeric(meta[10, 2]),
+                         length.out = dim(image)[2]))
 
-  # generate the positions on the row
-  row.names(df) <- seq(from=0, to=as.numeric(metadata[10,2]), by=as.numeric(metadata[11,2]))
+  # trim the scan image
+  image <- image[ , which(image_depth > as.numeric(meta[6, 2]) & image_depth < as.numeric(meta[7, 2])) , ]
 
-  # generate the return
-  return(df)
+  # rotate it
+  image <- aperm(image, c(2, 1, 3))
+  image <- image[c(dim(image)[1]: 1), , ]
+
+  # return the data or process the image grob
+  if(plot == TRUE){
+    require(ggplot2)
+    require(grid)
+    print(ggplot() +
+      ylim(rev(as.numeric(meta[6:7, 2]))) +
+      labs(y = "Position [mm]") +
+      annotation_custom(rasterGrob(image,
+                                   width  = unit(1, "npc"),
+                                   height = unit(1, "npc")),
+                        ymax = as.numeric(meta[7, 2])/-1,
+                        ymin = as.numeric(meta[6, 2])/-1,
+                        xmin = 0,
+                        xmax = ((as.numeric(foo$meta[2,2]) - as.numeric(foo$meta[1,2])) / dim(foo$image)[1]) * dim(foo$image)[2]) +
+       coord_fixed(ratio = dim(image)[2]/dim(image)[1])
+      )
+ }
+
+  return(list(image = image,
+              meta  = meta[6:11, ],
+              ratio = dim(image)[2]/dim(image)[1]
+              )
+         )
 }

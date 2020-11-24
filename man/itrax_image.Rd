@@ -2,22 +2,25 @@
 % Please edit documentation in R/itrax_image.r
 \name{itrax_image}
 \alias{itrax_image}
-\title{Estimate Munsell colour from an Itrax scan}
+\title{Read an Itrax Image File}
 \usage{
-itrax_image(filename, metadata = "document.txt")
+itrax_image(file = "optical.tif", meta = "document.txt", plot = FALSE)
 }
 \arguments{
+\item{plot}{would you like to create a plot as a side-effect?}
+
 \item{filename}{defines the name of the datafile to parse}
 
 \item{metadata}{defines the relating metadata}
 }
 \value{
-a matrix of RGB values
+a matrix of RGB values, and the relevant data from the metadata file relating to the image.
+Also computes the aspect ratio of the image.
 }
 \description{
-Estimates Munsell colour from a calibrated Itrax scan, or if using a Munsellator block, performs the calibration as well.
+Reads an Itrax image file and trims it according to the metadata provided.
 }
 \examples{
-itrax_image()
+itrax_image(file = "optical.tif", meta = "document.txt", plot = TRUE)
 
 }
