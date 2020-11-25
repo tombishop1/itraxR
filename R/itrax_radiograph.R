@@ -35,6 +35,14 @@ itrax_radiograph <- function(file = "radiograph.tif",
   image <- t(image)
   image <- image[c(dim(image)[1]: 1), ]
 
+  # label with positions in mm
+  row.names(image) <- seq(from = as.numeric(meta[ 6, 2]),
+                          to   = as.numeric(meta[7, 2]),
+                          length.out = dim(image)[1])
+  colnames(image) <- seq(from = 0,
+                         by   = (as.numeric(meta[7, 2]) - as.numeric(meta[6, 2])) / dim(image)[1],
+                         length.out = dim(image)[2])
+
   # return the data or process the image grob
   if(plot == TRUE){
     require(ggplot2)
