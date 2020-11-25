@@ -2,20 +2,25 @@
 % Please edit documentation in R/itrax_radiograph.r
 \name{itrax_radiograph}
 \alias{itrax_radiograph}
-\title{Import Itrax core-scanner radiograph file}
+\title{Read an Itrax Radiograph File}
 \usage{
-itrax_radiograph(filename = "radiograph.raw", metadata = "document.txt")
+itrax_radiograph(file = "radiograph.tif", meta = "document.txt", plot = FALSE)
 }
 \arguments{
-\item{datafile}{defines the name of the datafile to parse}
+\item{plot}{would you like to create a plot as a side-effect?}
+
+\item{filename}{defines the name of the datafile to parse}
+
+\item{metadata}{defines the relating metadata}
 }
 \value{
-a matrix of the parsed Itrax radiograph
+a matrix of RGB values, and the relevant data from the metadata file relating to the image.
+Also computes the aspect ratio of the image.
 }
 \description{
-Imports and parses data from a results file created by Q-Spec software, part of the Itrax core scanner.
+Reads an Itrax radiograph file and trims it according to the metadata provided.
 }
 \examples{
-itrax_radiograph()
+itrax_radiograph(file = "radiograph.tif", meta = "document.txt", plot = TRUE)
 
 }

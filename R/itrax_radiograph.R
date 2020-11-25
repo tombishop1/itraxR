@@ -28,9 +28,6 @@ itrax_radiograph <- function(file = "radiograph.tif",
                          to         = as.numeric(meta[10, 2]),
                          length.out = dim(image)[2]))
 
-  # trim the scan image
-  image <- image[ , which(image_depth > as.numeric(meta[6, 2]) & image_depth < as.numeric(meta[7, 2])) ]
-
   # rotate it
   image <- t(image)
   image <- image[c(dim(image)[1]: 1), ]
