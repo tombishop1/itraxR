@@ -36,18 +36,9 @@ itrax_ordination=function(dataframe, elementsonly=TRUE, zeros="addone", transfor
   rownames(df) <- seq(from = 1, length.out = dim(df)[1])
 
   # get rid of anything that isn't an element
-  elements = c("H", "He",
-               "Li", "Be", "B", "C", "N", "O", "F", "Ne",
-               "Na", "Mg", "Al", "Si", "P", "S", "Cl",
-               # "Ar",
-               "K", "Ca", "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As", "Se", "Br", "Kr",
-               "Rb", "Sr", "Y", "Zr", "Nb", "Mo", "Tc", "Ru", "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I", "Xe",
-               "Cs", "Ba",
-               "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb",
-               "Lu", "Hf", "Ta", "W", "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn",
-               "Fr", "Ra",
-               "Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No",
-               "Lr", "Unq", "Unp", "Unh", "Uns", "Uno", "Une", "Unn")
+  require(PeriodicTable)
+  data("periodicTable", package = "PeriodicTable")
+  elements <- periodicTable$symb
 
   if(elementsonly==TRUE) {
     df <- df[ , which(names(df) %in% elements)]
