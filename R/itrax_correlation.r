@@ -13,6 +13,9 @@
 #' @examples
 #' \dontrun{itrax_correlation(df)}
 #'
+#' @importFrom utils data
+#' @importFrom stats cor na.omit
+#' @importFrom utils data
 #' @export
 
 itrax_correlation=function(dataframe, elementsonly=TRUE, zeros="addone", transform=TRUE, diagrams=TRUE) {
@@ -36,8 +39,7 @@ itrax_correlation=function(dataframe, elementsonly=TRUE, zeros="addone", transfo
   rownames(df) <- seq(from = 1, length.out = dim(df)[1])
 
   # get rid of anything that isn't an element
-  require(PeriodicTable)
-  data("periodicTable", package = "PeriodicTable")
+  data("periodicTable", package = "PeriodicTable", envir = environment())
   elements <- periodicTable$symb
 
   if(elementsonly==TRUE) {

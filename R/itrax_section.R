@@ -13,6 +13,10 @@
 #' @examples
 #' \dontrun{itrax_section(df)}
 #'
+#' @importFrom utils data
+#' @importFrom stats cutree dist hclust na.omit
+#' @importFrom utils data
+#'
 #' @export
 
 itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL), graph=TRUE){
@@ -43,8 +47,7 @@ itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL)
   }
 
   # get rid of anything that isn't an element
-  require(PeriodicTable)
-  data("periodicTable", package = "PeriodicTable")
+  data("periodicTable", package = "PeriodicTable", envir = environment())
   elements <- periodicTable$symb
 
   # get rid of anything not in the list of elements above

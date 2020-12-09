@@ -3,7 +3,9 @@
 #' Parses the \code{"document.txt files"} generated from Itrax core scanners
 #'
 #' @param datafile a \code{"document.txt files"} generated from an Itrax core scanner
-#' #'
+#'
+#' @importFrom utils read.table
+#'
 #' @return a dataframe of all the parsed input data
 #'
 #' @examples

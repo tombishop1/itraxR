@@ -11,6 +11,8 @@
 #' @examples
 #' \dontrun{itrax_averaging(df, interval = 10)}
 #'
+#' @importFrom stats aggregate
+#'
 #' @export
 
 itrax_averaging = function( dataframe, interval, fun = mean ) {

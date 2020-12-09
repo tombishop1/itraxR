@@ -2,9 +2,9 @@
 #'
 #'  Reads an Itrax radiograph file and trims it according to the metadata provided.
 #'
-#' @param filename defines the name of the datafile to parse
-#' @param metadata defines the relating metadata
-#' @param plot     would you like to create a plot as a side-effect?
+#' @param file defines the name of the datafile to parse
+#' @param meta defines the relating metadata
+#' @param plot would you like to create a plot as a side-effect?
 #'
 #' @return a matrix of RGB values, and the relevant data from the metadata file relating to the image.
 #' Also computes the aspect ratio of the image.

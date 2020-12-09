@@ -7,11 +7,11 @@
 itrax_image(file = "optical.tif", meta = "document.txt", plot = FALSE)
 }
 \arguments{
+\item{file}{defines the name of the datafile to parse}
+
+\item{meta}{defines the relating metadata}
+
 \item{plot}{would you like to create a plot as a side-effect?}
-
-\item{filename}{defines the name of the datafile to parse}
-
-\item{metadata}{defines the relating metadata}
 }
 \value{
 a matrix of RGB values, and the relevant data from the metadata file relating to the image.

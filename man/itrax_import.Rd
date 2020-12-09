@@ -13,6 +13,8 @@ itrax_import(
 )
 }
 \arguments{
+\item{filename}{defines the name of the datafile to parse}
+
 \item{depth_top}{defines the coring in depth of the top of the core, in mm}
 
 \item{trim_top}{defines the length of any trimming required of data at the top of the core, in mm}
@@ -20,8 +22,6 @@ itrax_import(
 \item{trim_bottom}{defines the length of any trimming required at the bottom of the core, in mm}
 
 \item{parameters}{one of all (leave all parameters), some (remove some less useful parameters)}
-
-\item{datafile}{defines the name of the datafile to parse}
 }
 \value{
 a tibble of the parsed Itrax data

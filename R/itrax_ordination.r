@@ -8,10 +8,18 @@
 #' @param transform binary operator that if TRUE will center-log-transform the data
 #' @param diagrams binary operator, if TRUE will produce a graphical output, if BIPLOT will only produce a biplot
 #'
+#' @importFrom grDevices dev.new
+#' @importFrom graphics barplot
+#' @importFrom stats prcomp na.omit
+#' @importFrom utils data
+#'
 #' @return an ordination results object
 #'
 #' @examples
 #' \dontrun{itrax_ordination(df)}
+#'
+#' @importFrom utils data
+#' @importFrom stats biplot na.omit
 #'
 #' @export
 
@@ -36,8 +44,7 @@ itrax_ordination=function(dataframe, elementsonly=TRUE, zeros="addone", transfor
   rownames(df) <- seq(from = 1, length.out = dim(df)[1])
 
   # get rid of anything that isn't an element
-  require(PeriodicTable)
-  data("periodicTable", package = "PeriodicTable")
+  data("periodicTable", package = "PeriodicTable", envir = environment())
   elements <- periodicTable$symb
 
   if(elementsonly==TRUE) {

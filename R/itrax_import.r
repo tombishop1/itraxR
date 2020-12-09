@@ -2,7 +2,7 @@
 #'
 #' Imports and parses data from a results file created by Q-Spec software, part of the Itrax core scanner.
 #'
-#' @param datafile defines the name of the datafile to parse
+#' @param filename defines the name of the datafile to parse
 #' @param depth_top defines the coring in depth of the top of the core, in mm
 #' @param trim_top defines the length of any trimming required of data at the top of the core, in mm
 #' @param trim_bottom defines the length of any trimming required at the bottom of the core, in mm
@@ -10,19 +10,23 @@
 #'
 #' @return a tibble of the parsed Itrax data
 #'
+#' @import dplyr PeriodicTable ggplot2 grid
+
+#' @importFrom utils data
+#'
 #' @export
 
 
 itrax_import <- function(filename = "Results.txt", depth_top = NA, trim_top = 0, trim_bottom = 0, parameters = "some"){
 
   # create elements list
-  data("periodicTable", package = "PeriodicTable")
+  data("periodicTable", package = "PeriodicTable", envir = environment())
   elements <- periodicTable$symb
 
   others <- c( "position (mm)", "sample.surface", "MSE", "cps", "validity", "Mo inc", "Mo coh", "Cr inc", "Cr coh" )
 
   # import and tidy
-  df <- suppressMessages(suppressWarnings(read_delim::read_tsv(filename, skip = 2))) %>%
+  df <- suppressMessages(suppressWarnings(readr::read_tsv(filename, skip = 2))) %>%
     janitor::remove_empty(which = c("rows", "cols")) %>%
     mutate(validity = as.logical(validity))
 

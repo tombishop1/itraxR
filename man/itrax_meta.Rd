@@ -7,8 +7,7 @@
 itrax_meta(datafile = "document.txt")
 }
 \arguments{
-\item{datafile}{a \code{"document.txt files"} generated from an Itrax core scanner
-#'}
+\item{datafile}{a \code{"document.txt files"} generated from an Itrax core scanner}
 }
 \value{
 a dataframe of all the parsed input data
