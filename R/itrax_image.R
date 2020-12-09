@@ -19,8 +19,7 @@ itrax_image <- function(file = "optical.tif",
                         plot = FALSE){
 
   # import the image and metadata files
-  require(tiff)
-  image <- readTIFF(file)
+  image <- tiff::readTIFF(file)
   meta  <- itrax_meta(meta)
 
   # label the image depth
@@ -45,8 +44,6 @@ itrax_image <- function(file = "optical.tif",
 
   # return the data or process the image grob
   if(plot == TRUE){
-    require(ggplot2)
-    require(grid)
     print(ggplot() +
       ylim(rev(as.numeric(meta[6:7, 2]))) +
       scale_x_continuous(limits = c(0, (((as.numeric(meta[7, 2]) - as.numeric(meta[6, 2])) / dim(image)[1]) * dim(image)[2]))) +

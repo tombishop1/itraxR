@@ -119,8 +119,7 @@ itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL)
 
   # draw a picture
   if(graph==TRUE){
-    require(ggplot2)
-    p <- ggplot2::ggplot(df, aes(row.names(df), fill=as.factor(groups))) + geom_bar()
+    p <- ggplot(df, aes(row.names(df), fill=as.factor(groups))) + geom_bar()
     print(p)
   } else if(graph==FALSE){
   } else{stop('graph must be true or false')}

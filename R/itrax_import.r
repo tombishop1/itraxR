@@ -15,19 +15,15 @@
 
 itrax_import <- function(filename = "Results.txt", depth_top = NA, trim_top = 0, trim_bottom = 0, parameters = "some"){
 
-  require(dplyr)
-  require(janitor)
-  require(readr)
-
-  require(PeriodicTable)
+  # create elements list
   data("periodicTable", package = "PeriodicTable")
   elements <- periodicTable$symb
 
   others <- c( "position (mm)", "sample.surface", "MSE", "cps", "validity", "Mo inc", "Mo coh", "Cr inc", "Cr coh" )
 
   # import and tidy
-  df <- suppressMessages(suppressWarnings(read_tsv(filename, skip = 2))) %>%
-    remove_empty(which = c("rows", "cols")) %>%
+  df <- suppressMessages(suppressWarnings(read_delim::read_tsv(filename, skip = 2))) %>%
+    janitor::remove_empty(which = c("rows", "cols")) %>%
     mutate(validity = as.logical(validity))
 
   # remove stuff we don't need

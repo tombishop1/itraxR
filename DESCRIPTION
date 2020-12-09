@@ -4,20 +4,20 @@ Title: Itrax Data Analysis
 Version: 0.1.0
 Author: Thomas Bishop
 Maintainer: Thomas Bishop <tombishopemail@gmail.com>
-Description: Parse, trim, join, visualise and analyse data from Itrax core scanners.
+URL: https://thomasbishop.uk
+BugReports: https://github.com/tombishop1/itraxR/issues
+Description: Parse, Trim, Join, Visualise and Analyse Data from Itrax Core Scanners.
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.1
-Imports:
-    chemometrics,
-    corrplot,
-    tiff,
-    analogue,
+Depends: 
     dplyr,
-    lattice,
-    data.table,
-    ggplot2,
     PeriodicTable,
-    grid,
+    ggplot2,
+    grid
+Imports:
+    readr,
+    chemometrics,
+    tiff,
     janitor,
-    readr
+    corrplot
