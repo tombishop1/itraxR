@@ -30,6 +30,6 @@ an object that includes the depth (or position) and the respective group, alongs
 Performs a cluster analysis and automatic statistical grouping of parsed Itrax results data
 }
 \examples{
-itrax_section( df )
+\dontrun{itrax_section(df)}
 
 }

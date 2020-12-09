@@ -11,7 +11,7 @@
 #' @return an ordination results object
 #'
 #' @examples
-#' itrax_ordination(df)
+#' \dontrun{itrax_ordination(df)}
 #'
 #' @export
 

@@ -21,6 +21,6 @@ Also computes the aspect ratio of the image.
 Reads an Itrax radiograph file and trims it according to the metadata provided.
 }
 \examples{
-itrax_radiograph(file = "radiograph.tif", meta = "document.txt", plot = TRUE)
+\dontrun{itrax_radiograph(file = "radiograph.tif", meta = "document.txt", plot = TRUE)}
 
 }

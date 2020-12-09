@@ -17,6 +17,6 @@ a dataframe of all the parsed input data
 Parses the \code{"document.txt files"} generated from Itrax core scanners
 }
 \examples{
-itrax_meta("document.txt")
+\dontrun{itrax_meta("document.txt")}
 
 }

@@ -11,7 +11,7 @@
 #' @return an object that includes the depth (or position) and the respective group, alongside a list of group center samples for choosing calibration samples
 #'
 #' @examples
-#' itrax_section( df )
+#' \dontrun{itrax_section(df)}
 #'
 #' @export
 

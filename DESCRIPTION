@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Thomas Bishop
 Maintainer: Thomas Bishop <tombishopemail@gmail.com>
 Description: Parse, trim, join, visualise and analyse data from Itrax core scanners.
-License: CC-BY-NC-SA
+License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.1
 Imports:
@@ -16,4 +16,8 @@ Imports:
     dplyr,
     lattice,
     data.table,
-    ggplot2
+    ggplot2,
+    PeriodicTable,
+    grid,
+    janitor,
+    readr

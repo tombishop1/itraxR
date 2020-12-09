@@ -7,7 +7,7 @@
 #' @return a dataframe of all the parsed input data
 #'
 #' @examples
-#' itrax_meta("document.txt")
+#' \dontrun{itrax_meta("document.txt")}
 #'
 #' @export
 

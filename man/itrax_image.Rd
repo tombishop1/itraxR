@@ -21,6 +21,6 @@ Also computes the aspect ratio of the image.
 Reads an Itrax image file and trims it according to the metadata provided.
 }
 \examples{
-itrax_image(file = "optical.tif", meta = "document.txt", plot = TRUE)
+\dontrun{itrax_image(file = "optical.tif", meta = "document.txt", plot = TRUE)}
 
 }

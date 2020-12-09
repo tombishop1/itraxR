@@ -30,6 +30,6 @@ an ordination results object
 Performs and visualises principle component analysis data from Itrax result data
 }
 \examples{
-itrax_ordination(df)
+\dontrun{itrax_ordination(df)}
 
 }
