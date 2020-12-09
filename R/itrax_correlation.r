@@ -11,7 +11,7 @@
 #' @return a correlation matrix object
 #'
 #' @examples
-#' itrax_correlation(df)
+#' \dontrun{itrax_correlation(df)}
 #'
 #' @export
 

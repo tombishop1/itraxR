@@ -20,6 +20,6 @@ a dataframe of the averaged Itrax data
 Resamples Itrax results files into smaller averaged ranges. Note that the labels column, if present, will need to be rebuilt.
 }
 \examples{
-itrax_averaging(df, interval = 10)
+\dontrun{itrax_averaging(df, interval = 10)}
 
 }

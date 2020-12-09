@@ -30,6 +30,6 @@ a correlation matrix object
 Calculates a correlation matrix for Itrax data results including normalisation and visualisation
 }
 \examples{
-itrax_correlation(df)
+\dontrun{itrax_correlation(df)}
 
 }

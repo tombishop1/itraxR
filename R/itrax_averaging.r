@@ -9,7 +9,7 @@
 #' @return a dataframe of the averaged Itrax data
 #'
 #' @examples
-#' itrax_averaging(df, interval = 10)
+#' \dontrun{itrax_averaging(df, interval = 10)}
 #'
 #' @export
 
