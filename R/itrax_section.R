@@ -47,11 +47,10 @@ itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL)
   }
 
   # get rid of anything that isn't an element
-  data("periodicTable", package = "PeriodicTable", envir = environment())
   elements <- periodicTable$symb
 
   # get rid of anything not in the list of elements above
-  df <- df[ , which(names(df) %in% element)]
+  df <- df[ , which(names(df) %in% elements)]
 
   # get rid of anything not in the specified list of elements
   if(!is.null(elements)){

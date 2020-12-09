@@ -12,7 +12,6 @@ Encoding: UTF-8
 RoxygenNote: 7.1.1
 Depends: 
     dplyr,
-    PeriodicTable,
     ggplot2,
     grid
 Imports:
@@ -20,4 +19,5 @@ Imports:
     chemometrics,
     tiff,
     janitor,
-    corrplot
+    corrplot,
+    rlang

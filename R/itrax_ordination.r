@@ -10,16 +10,13 @@
 #'
 #' @importFrom grDevices dev.new
 #' @importFrom graphics barplot
-#' @importFrom stats prcomp na.omit
+#' @importFrom stats prcomp na.omit biplot
 #' @importFrom utils data
 #'
 #' @return an ordination results object
 #'
 #' @examples
 #' \dontrun{itrax_ordination(df)}
-#'
-#' @importFrom utils data
-#' @importFrom stats biplot na.omit
 #'
 #' @export
 
@@ -44,7 +41,6 @@ itrax_ordination=function(dataframe, elementsonly=TRUE, zeros="addone", transfor
   rownames(df) <- seq(from = 1, length.out = dim(df)[1])
 
   # get rid of anything that isn't an element
-  data("periodicTable", package = "PeriodicTable", envir = environment())
   elements <- periodicTable$symb
 
   if(elementsonly==TRUE) {
