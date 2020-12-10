@@ -37,12 +37,19 @@ itrax_radiograph <- function(file = "radiograph.tif",
                           length.out  = dim(image)[2])
 
   # trim the scan image
-  if(trim == TRUE){
-    image <- image[ which(as.numeric(rownames(image)) >= as.numeric(meta[6, 2]) & as.numeric(rownames(image)) <= as.numeric(meta[7, 2])) , ]
-  } else if(trim == FALSE){
-  } else if(length(trim) == 2){
+  # check length
+  if(length(trim) == 2){
     image <- image[ which(as.numeric(rownames(image)) >= trim[1] & as.numeric(rownames(image)) <= trim[2]) , ]
-  } else{stop("If you define trim parameters, pass a two element numeric vector of the start and stop positions.")}
+  }
+  # check true
+  else if(trim == TRUE){
+    image <- image[ which(as.numeric(rownames(image)) >= as.numeric(meta[6, 2]) & as.numeric(rownames(image)) <= as.numeric(meta[7, 2])) , ]
+  }
+  # check false
+  else if(trim == FALSE){
+  }
+  # return error
+  else{stop("If you define trim parameters, pass a two element numeric vector of the start and stop positions.")}
 
   # return the data or process the image grob
   if(plot == TRUE){
