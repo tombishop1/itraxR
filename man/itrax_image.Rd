@@ -4,7 +4,12 @@
 \alias{itrax_image}
 \title{Read an Itrax Image File}
 \usage{
-itrax_image(file = "optical.tif", meta = "document.txt", plot = FALSE)
+itrax_image(
+  file = "optical.tif",
+  meta = "document.txt",
+  plot = FALSE,
+  trim = TRUE
+)
 }
 \arguments{
 \item{file}{defines the name of the datafile to parse}
@@ -12,10 +17,11 @@ itrax_image(file = "optical.tif", meta = "document.txt", plot = FALSE)
 \item{meta}{defines the relating metadata}
 
 \item{plot}{would you like to create a plot as a side-effect?}
+
+\item{trim}{defines custom trim parameters. The default behaviour uses the limits from the metadata file. Set the false for no trimming, or set the position limits by passing a two element vector.}
 }
 \value{
 a matrix of RGB values, and the relevant data from the metadata file relating to the image.
-Also computes the aspect ratio of the image.
 }
 \description{
 Reads an Itrax image file and trims it according to the metadata provided.
