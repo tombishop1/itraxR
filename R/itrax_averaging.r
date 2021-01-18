@@ -17,6 +17,9 @@
 
 itrax_averaging = function( dataframe, interval, fun = mean ) {
 
+  # depreciate this function
+  .Deprecated(new = "itrax_reduce", package = "itraxR")
+
   # assert the dataframe exists and import it
   if(is.data.frame(dataframe)){
     df <- as.data.frame(dataframe)
