@@ -2,139 +2,132 @@
 #'
 #' Performs a cluster analysis and automatic statistical grouping of parsed Itrax results data
 #'
-#' @param dataframe defines Itrax results data parsed using \code{"itrax_import()"} or \code{"itrax_join()"}
-#' @param divisions defines the number of sub-groups to divide the data into. Use this to define the number of samples for calibration.
-#' @param zeros can be either "addone" or "limit" --- this defines what to do with zero values when normalisating. Limit uses 0.001 as the zero value, add one adds one to all data
-#' @param elements an optional list of elements to include, otherwise, all elements present are used
-#' @param graph a binary operator that if TRUE will produce a graphical representation of the results
+#' @param dataframe pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"}
+#' @param elementsonly if TRUE, only chemical elements are included. If FALSE, the data is passed unfiltered, otherwise a character vector of desired variable names can be supplied
+#' @param zeros if "addone", adds one to all values. If "limit", replaces zero values with 0.001. Otherwise a function can be supplied to remove zero values.
+#' @param transform binary operator that if TRUE will center-log-transform the data, if FALSE will leave the data untransformed. Otherwise, a function can be supplied to transform the data.
+#' @param divisions the number of samples to slice into
 #'
-#' @return an object that includes the depth (or position) and the respective group, alongside a list of group center samples for choosing calibration samples
+#' @importFrom tidyr drop_na
+#' @importFrom stats prcomp hclust dist cutree
+#' @importFrom compositions clr
+#' @importFrom rlang .data
+#'
+#' @return either an output of \code{prcomp()}, or a list including the input data
 #'
 #' @examples
-#' \dontrun{itrax_section(df)}
-#'
-#' @importFrom utils data
-#' @importFrom stats cutree dist hclust na.omit
-#' @importFrom utils data
+#' itrax_section(CD166_19_S1$xrf)
 #'
 #' @export
+#'
 
-itrax_section=function(dataframe, divisions=30, zeros="addone", elements=c(NULL), graph=TRUE){
+itrax_section <- function(dataframe,
+                              divisions = 30,
+                             elementsonly = TRUE,
+                             zeros = "addone",
+                             transform = TRUE){
 
-  # this function returns the following:
-  # $samples - a list of suggested samples for analysis
-  # $depth OR $position depending on what's present
-  # $groups - the groups to go with $depth
+  # fudge to stop check notes
+  . = NULL
+  group = NULL
+  ids = NULL
 
-  # import the data
-  # assert the dataframe exists and import it
-  if(is.data.frame(dataframe)){
-    df <- dataframe
+  # label with ids
+  dataframe$ids <- 1:dim(dataframe)[1]
+  input_dataframe <- dataframe
+
+  # trim to only the elements
+  if(is.logical(elementsonly) == TRUE && elementsonly==TRUE){
+    dataframe <- dataframe %>%
+      select(any_of(c(periodicTable$symb, "ids")))
+    dataframe <- dataframe %>%
+      select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))
+  } else if(is.logical(elementsonly) == TRUE && elementsonly==FALSE){
+    dataframe <- dataframe %>%
+      select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))
   } else{
-    stop('Dataframe does not exist or object is not a dataframe.')
-  }
+    dataframe <- dataframe %>%
+      select(any_of(c(elementsonly, "ids")))
+    dataframe <- dataframe %>%
+      select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))}
 
-  # rename the rows by depth
-  if("depth" %in% colnames(df)) {
-    rownames(df) <- round(df$depth)
-    z_is <- "depth"
-    # or position
-  } else if("position" %in% colnames(df)) {
-    rownames(df) <- round(df$position)
-    z_is <- "position"
+  # deal with the zeros
+  if(zeros=="addone"){
+    dataframe <- dataframe + 1
+    dataframe$ids <- dataframe$ids-1
+    dataframe <- dataframe %>% tidyr::drop_na()
+  } else if(zeros=="limit"){
+    dataframe <- dataframe %>%
+      mutate(across(any_of(periodicTable$symb), ~recode(.data, `0` = 0.001))) %>%
+      tidyr::drop_na()
   } else{
-    stop('Neither depth nor position is present.')
+    dataframe <- dataframe %>%
+      mutate(across(any_of(periodicTable$symb), zeros)) %>%
+      tidyr::drop_na()
   }
 
-  # get rid of anything that isn't an element
-  elements <- periodicTable$symb
-
-  # get rid of anything not in the list of elements above
-  df <- df[ , which(names(df) %in% elements)]
-
-  # get rid of anything not in the specified list of elements
-  if(!is.null(elements)){
-    df <- df[ , which(names(df) %in% elements)]
-  }else{}
-
-  # deal with zero values
-  if(zeros=="addone") {
-    df <- df + 1
-  } else if(zeros=="limit") {
-    df[df == 0] <- 0.001
-  } else{stop('zeros must be addone or limit')}
-
-  # deal with NA values
-  df <- na.omit(df)
-
-  # centered log ratio transform the data
-  # require(chemometrics) # could also use "compositions" package
-  df <- chemometrics::clr(df)
-
-  # perform a cluster analysis using Euclidian distances
-  d <- dist(as.matrix(df))
-  hc <- hclust(d, method = "ward.D2")
-
-  # draw a dendrogram
-  if(graph==TRUE){
-    #plot(hc)
-    #dev.new()
-  } else if(graph==FALSE){
-  } else{stop('graph must be true or false')}
-
-  # divide into groups
-  groups <- cutree(hc, k=divisions)
-  df$group <- groups
-
-  # do a cluster analysis of each group individually
-  sample_list <- c(1:as.numeric(divisions))
-  # sample_list <- NA
-  loop_group <- 1
-
-  while( loop_group < divisions ){
-
-    loop_d <- dist( as.matrix(df[ df$group == loop_group , ]) )
-    loop_hc <- hclust( loop_d, method="ward.D2" )
-
-    # convert the index number to a depth label
-    loop_reorder <- data.frame(loop_hc$labels, loop_hc$order)
-    loop_reorder <- loop_reorder[order(loop_reorder$loop_hc.order),]
-
-    # pick the MIDDLE in each group
-    loop_centerpoint <- round(length(loop_reorder$loop_hc.labels) / 2)
-
-    loop_center <- as.character(loop_reorder[loop_centerpoint,1])
-
-
-    # append the depth or position of each of those samples to a list
-    sample_list[loop_group] <- loop_center
-    #sample_list <- c(sample_list, loop_center)
-
-    loop_group <- loop_group + 1
+  # deal with the transformation
+  if(is.logical(transform) == TRUE && transform==TRUE){
+    dataframe <- dataframe %>%
+      mutate(across(any_of(periodicTable$symb), ~compositions::clr(.)))
+      #compositions::clr()
+  } else if(is.logical(transform) == TRUE && transform==FALSE){
+    dataframe <- dataframe
+  } else{
+    dataframe <- transform(dataframe)
   }
 
-  # sort the list of samples numerically for the sake of neatness
-  sample_list <- sort(as.numeric(sample_list))
+  #glimpse(dataframe)
 
-  # print the list for diagnostics
-  # print(sample_list)
+  # perform the first ordering
+  firstorder <- as_tibble(dataframe) %>%
+    mutate(group = dataframe %>%
+             as.matrix() %>%
+             dist() %>%
+             hclust(method = "ward.D2") %>%
+             cutree(k=divisions) %>%
+             as.factor()) %>%
+    select(`ids`, `group`)
 
-  # draw a picture
-  if(graph==TRUE){
-    p <- ggplot(df, aes(row.names(df), fill=as.factor(groups))) + geom_bar()
-    print(p)
-  } else if(graph==FALSE){
-  } else{stop('graph must be true or false')}
+  # perform second ordering
+  # subset a second order group
 
-  # make a small table with the position OR depth, and put the groups there
-  group_table <- as.data.frame(df$group)
-  row.names(group_table) <- row.names(df)
-  colnames(group_table) <- "group"
+  rep_samples <- lapply(unique(firstorder$group), function(x){x
 
-  if(z_is=="depth"){
-    return(list( "groups"=c(group_table$group), "depth"=c(row.names(df)), "samples"=c(sample_list) ) )
-  } else if(z_is=="position"){
-    return(list( "groups"=c(group_table$group), "position"=c(row.names(df)), "samples"=c(sample_list) ) )
-  }
+  second_order_subset <- as_tibble(dataframe) %>%
+    mutate(group = firstorder$group) %>%
+    filter(group == x)
 
+  # perform another ordering of them and subset
+  second_order_subset <- second_order_subset %>%
+     mutate(group = second_order_subset %>%
+             select(-`group`, `ids`) %>%
+             as.matrix() %>%
+             dist() %>%
+             hclust(method = "ward.D2") %>%
+             .$order
+            ) %>%
+    filter(group == round(mean(`group`))) %>%
+    pull(`ids`)
+  })
+
+  rep_samples <- rep_samples %>%
+    unlist()
+
+  #glimpse(rep_samples)
+
+  rep_samples <- input_dataframe %>%
+    filter(`ids` %in% rep_samples) %>%
+    select(-`ids`)
+
+  #glimpse(rep_samples)
+
+  # sort the return
+  return(list(groups = right_join(firstorder, input_dataframe, by = "ids") %>%
+                select(-`ids`),
+              samples = rep_samples))
 }
+
+# TODO make plotting function here
+# myPCA %>%
+#  broom::augment(CD166_19_S1$xrf %>% tidyr::drop_na())

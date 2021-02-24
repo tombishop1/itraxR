@@ -9,27 +9,27 @@ itrax_ordination(
   elementsonly = TRUE,
   zeros = "addone",
   transform = TRUE,
-  diagrams = TRUE
+  return = "list"
 )
 }
 \arguments{
 \item{dataframe}{pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"}}
 
-\item{elementsonly}{binary operator that if TRUE will only perform the analysis for elemental data}
+\item{elementsonly}{if TRUE, only chemical elements are included. If FALSE, the data is passed unfiltered, otherwise a character vector of desired variable names can be supplied}
 
-\item{zeros}{can be either "addone" or "limit" --- this defines what to do with zero values when normalisating. Limit uses 0.001 as the zero value, add one adds one to all data}
+\item{zeros}{if "addone", adds one to all values. If "limit", replaces zero values with 0.001. Otherwise a function can be supplied to remove zero values.}
 
-\item{transform}{binary operator that if TRUE will center-log-transform the data}
+\item{transform}{binary operator that if TRUE will center-log-transform the data, if FALSE will leave the data untransformed. Otherwise, a function can be supplied to transform the data.}
 
-\item{diagrams}{binary operator, if TRUE will produce a graphical output, if BIPLOT will only produce a biplot}
+\item{return}{if "pca" the output of \code{prcomp()} is returned, otherwise "list" is a list including the transformed data, sample scores, and the output of prcomp().}
 }
 \value{
-an ordination results object
+either an output of \code{prcomp()}, or a list including the input data
 }
 \description{
 Performs and visualises principle component analysis data from Itrax result data
 }
 \examples{
-\dontrun{itrax_ordination(df)}
+itrax_ordination(CD166_19_S1$xrf)
 
 }

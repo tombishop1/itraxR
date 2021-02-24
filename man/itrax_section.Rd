@@ -7,29 +7,29 @@
 itrax_section(
   dataframe,
   divisions = 30,
+  elementsonly = TRUE,
   zeros = "addone",
-  elements = c(NULL),
-  graph = TRUE
+  transform = TRUE
 )
 }
 \arguments{
-\item{dataframe}{defines Itrax results data parsed using \code{"itrax_import()"} or \code{"itrax_join()"}}
+\item{dataframe}{pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"}}
 
-\item{divisions}{defines the number of sub-groups to divide the data into. Use this to define the number of samples for calibration.}
+\item{divisions}{the number of samples to slice into}
 
-\item{zeros}{can be either "addone" or "limit" --- this defines what to do with zero values when normalisating. Limit uses 0.001 as the zero value, add one adds one to all data}
+\item{elementsonly}{if TRUE, only chemical elements are included. If FALSE, the data is passed unfiltered, otherwise a character vector of desired variable names can be supplied}
 
-\item{elements}{an optional list of elements to include, otherwise, all elements present are used}
+\item{zeros}{if "addone", adds one to all values. If "limit", replaces zero values with 0.001. Otherwise a function can be supplied to remove zero values.}
 
-\item{graph}{a binary operator that if TRUE will produce a graphical representation of the results}
+\item{transform}{binary operator that if TRUE will center-log-transform the data, if FALSE will leave the data untransformed. Otherwise, a function can be supplied to transform the data.}
 }
 \value{
-an object that includes the depth (or position) and the respective group, alongside a list of group center samples for choosing calibration samples
+either an output of \code{prcomp()}, or a list including the input data
 }
 \description{
 Performs a cluster analysis and automatic statistical grouping of parsed Itrax results data
 }
 \examples{
-\dontrun{itrax_section(df)}
+itrax_section(CD166_19_S1$xrf)
 
 }

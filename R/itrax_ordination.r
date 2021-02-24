@@ -3,92 +3,99 @@
 #' Performs and visualises principle component analysis data from Itrax result data
 #'
 #' @param dataframe pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"}
-#' @param elementsonly binary operator that if TRUE will only perform the analysis for elemental data
-#' @param zeros can be either "addone" or "limit" --- this defines what to do with zero values when normalisating. Limit uses 0.001 as the zero value, add one adds one to all data
-#' @param transform binary operator that if TRUE will center-log-transform the data
-#' @param diagrams binary operator, if TRUE will produce a graphical output, if BIPLOT will only produce a biplot
+#' @param elementsonly if TRUE, only chemical elements are included. If FALSE, the data is passed unfiltered, otherwise a character vector of desired variable names can be supplied
+#' @param zeros if "addone", adds one to all values. If "limit", replaces zero values with 0.001. Otherwise a function can be supplied to remove zero values.
+#' @param transform binary operator that if TRUE will center-log-transform the data, if FALSE will leave the data untransformed. Otherwise, a function can be supplied to transform the data.
+#' @param return if "pca" the output of \code{prcomp()} is returned, otherwise "list" is a list including the transformed data, sample scores, and the output of prcomp().
 #'
-#' @importFrom grDevices dev.new
-#' @importFrom graphics barplot
-#' @importFrom stats prcomp na.omit biplot
-#' @importFrom utils data
+#' @importFrom tidyr drop_na
+#' @importFrom stats prcomp
+#' @importFrom compositions clr
+#' @importFrom rlang .data
 #'
-#' @return an ordination results object
+#' @return either an output of \code{prcomp()}, or a list including the input data
 #'
 #' @examples
-#' \dontrun{itrax_ordination(df)}
+#' itrax_ordination(CD166_19_S1$xrf)
 #'
 #' @export
 
-itrax_ordination=function(dataframe, elementsonly=TRUE, zeros="addone", transform=TRUE, diagrams=TRUE) {
+itrax_ordination <- function(dataframe,
+                                 elementsonly = TRUE,
+                                 zeros = "addone",
+                                 transform = TRUE,
+                                 return = "list"){
 
-  # check the dataframe exists
-  if(is.data.frame(dataframe)){
-    df <- dataframe
+  # label with ids
+  dataframe$ids <- 1:dim(dataframe)[1]
+  input_dataframe <- dataframe
+
+  # trim to only the elements
+  if(is.logical(elementsonly) == TRUE && elementsonly==TRUE){
+    dataframe <- dataframe %>%
+      select(any_of(c(periodicTable$symb, "ids")))
+    dataframe <- dataframe %>%
+      select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))
+  } else if(is.logical(elementsonly) == TRUE && elementsonly==FALSE){
+    dataframe <- dataframe %>%
+      select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))
   } else{
-    stop('Dataframe does not exist or object is not a dataframe.')
-  }
+    dataframe <- dataframe %>%
+      select(any_of(c(elementsonly, "ids")))
+    dataframe <- dataframe %>%
+      select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))}
 
-  # rename the rows
-#  if("depth" %in% colnames(df)) {
-#    rownames(df) <- round(df$depth)
-#    labels <- "Depth (mm)"
-#  } else{
-#    df$position <- as.numeric(df$position)
-#    rownames(df) <- df$position
-#    labels <- "Position (mm)"
-#  }
-  rownames(df) <- seq(from = 1, length.out = dim(df)[1])
-
-  # get rid of anything that isn't an element
-  elements <- periodicTable$symb
-
-  if(elementsonly==TRUE) {
-    df <- df[ , which(names(df) %in% elements)]
-  } else if(elements==FALSE){
+  # deal with the zeros
+  if(zeros=="addone"){
+    dataframe <- dataframe + 1
+    dataframe$ids <- dataframe$ids-1
+    dataframe <- dataframe %>% tidyr::drop_na()
+  } else if(zeros=="limit"){
+    dataframe <- dataframe %>%
+      mutate(across(any_of(periodicTable$symb), ~recode(.data, `0` = 0.001))) %>%
+      tidyr::drop_na()
   } else{
-    stop('elements only must be true or false')
+    dataframe <- dataframe %>%
+      mutate(across(any_of(periodicTable$symb), zeros)) %>%
+      tidyr::drop_na()
   }
 
-  # deal with zero values
-  if(zeros=="addone") {
-    df <- df + 1
-  } else if(zeros=="limit") {
-    df[df == 0] <- 0.001
-  }else{
-    warning('zero values may be present because zeros is not valid')
-  }
-
-  # calculate centered log ratios for all elements in the original dataset
-  if(transform==TRUE) {
-    #require(chemometrics) # could also use "compositions" package
-    df <- chemometrics::clr(df)
-  } else if(transform==FALSE) {
+  # deal with the transformation
+  if(is.logical(transform) == TRUE && transform==TRUE){
+    dataframe <- dataframe %>%
+      mutate(across(any_of(periodicTable$symb), ~compositions::clr(.)))
+  } else if(is.logical(transform) == TRUE && transform==FALSE){
+    dataframe <- dataframe
   } else{
-    stop('transform must be TRUE or FALSE')
+    dataframe <- transform(dataframe)
   }
 
-  # perform a principle components analysis of the original dataset and display the eigenvalues
-  df_pca <- prcomp(na.omit(df))
-  # print(summary(df_pca$rotation))
+  # perform the PCA
+  pca <- dataframe %>%
+    scale() %>%
+    prcomp()
 
-  # plot an ordination diagram of axes 1 and 2, with sample and variable scores, to explore the data
-  # then plot the first axis by position
-  # and also plot the axis one loadings
-  if(diagrams==TRUE) {
-    dev.new()
-    biplot(df_pca)
-    dev.new()
-    plot(row.names(df_pca$x), df_pca$x[ , 1], xlab=labels, ylab="PC1")
-    dev.new()
-    barplot(sort(df_pca$rotation[ , "PC1"]), horiz=TRUE, names.arg=row.names(sort(df_pca$rotation[ , "PC1"])),
-            cex.names=0.6, xlab="PC1")
-  } else if(diagrams=="BIPLOT"){
-    biplot(df_pca)
-  } else if(diagrams==FALSE){
-  } else{
-    stop('diagrams must be TRUE or FALSE, or BIPLOT')
-  }
+  # select the return
+  if(return == "pca"){
+    #warning("`return = \"pca\"` will be depreciated, but for now is retained for compatibility.") # not sure about this yet
+    return(pca)
+    } else if(return == "list")
 
-  return(df_pca)
+      transformed_data <- pca %>%
+        broom::augment(as_tibble(dataframe)) %>%
+        select(any_of(c(names(dataframe), ".fittedPC1", ".fittedPC2", ".fittedPC3")))
+
+      return(list(pca = pca,
+                  data = left_join(as_tibble(input_dataframe) %>%
+                                           select(c(names(input_dataframe)[!names(input_dataframe) %in% names(as_tibble(transformed_data))], "ids")),
+                                   as_tibble(transformed_data),
+                                         by = "ids") %>%
+                    select(names(input_dataframe), everything()) %>%
+                    select(-ids)
+                  )
+             )
 }
+
+# TODO make plotting function here
+# myPCA %>%
+#  broom::augment(CD166_19_S1$xrf %>% tidyr::drop_na())
