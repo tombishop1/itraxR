@@ -10,6 +10,14 @@
 #'
 #' @return a tibble of the parsed Itrax data
 #'
+#' @examples
+#' itrax_import(
+#'   filename = system.file("extdata",
+#'                          "CD166_19_S1_Results.txt",
+#'                          package = "itraxR",
+#'                          mustWork = TRUE),
+#'   depth_top = 0)
+#'
 #' @import dplyr ggplot2 grid
 
 #' @importFrom rlang .data

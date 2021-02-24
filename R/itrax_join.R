@@ -7,6 +7,9 @@
 #' @return a tibble of all the input data
 #'
 #' @export
+#'
+#' @examples
+#' itrax_join(list(core1 = CD166_19_S1$xrf, core2 = CD166_19_S1$xrf))
 
 itrax_join <- function(list){
   if(all(unlist(lapply(list, function(x) "depth" %in% colnames(x)))) == FALSE){

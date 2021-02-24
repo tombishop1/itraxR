@@ -9,7 +9,10 @@
 #' @return a dataframe of all the parsed input data
 #'
 #' @examples
-#' \dontrun{itrax_meta("document.txt")}
+#' itrax_meta(system.file("extdata",
+#'                        "CD166_19_S1_xrf_document.txt",
+#'                        package = "itraxR",
+#'                        mustWork = TRUE))
 #'
 #' @export
 

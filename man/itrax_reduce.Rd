@@ -36,3 +36,7 @@ a tibble with the same number of rows as `breaks` and the same number of columns
 Reduces Itrax XRF data into arbitrary chunks using an arbitrary function.
 This is useful when making direct comparisons between the Itrax XRF data and some other data collected at a lower resolution.
 }
+\examples{
+itrax_reduce(dataframe = CD166_19_S1$xrf, by = 10)
+
+}

@@ -27,6 +27,14 @@ a matrix of RGB values, and the relevant data from the metadata file relating to
 Reads an Itrax image file and trims it according to the metadata provided.
 }
 \examples{
-\dontrun{itrax_image(file = "optical.tif", meta = "document.txt", plot = TRUE)}
+itrax_image(file = system.file("extdata",
+                         "CD166_19_S1_optical_lowres.tif",
+                         package = "itraxR",
+                         mustWork = TRUE),
+            meta = system.file("extdata",
+                         "CD166_19_S1_xrf_document.txt",
+                         package = "itraxR",
+                         mustWork = TRUE),
+            plot = FALSE)
 
 }

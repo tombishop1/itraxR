@@ -29,3 +29,12 @@ a tibble of the parsed Itrax data
 \description{
 Imports and parses data from a results file created by Q-Spec software, part of the Itrax core scanner.
 }
+\examples{
+itrax_import(
+  filename = system.file("extdata",
+                         "CD166_19_S1_Results.txt",
+                         package = "itraxR",
+                         mustWork = TRUE),
+  depth_top = 0)
+
+}

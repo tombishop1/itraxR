@@ -13,6 +13,9 @@
 #'
 #' @return a tibble with the same number of rows as `breaks` and the same number of columns as `dataframe`
 #'
+#' @examples
+#' itrax_reduce(dataframe = CD166_19_S1$xrf, by = 10)
+#'
 #' @importFrom rlang .data
 #'
 #' @import dplyr

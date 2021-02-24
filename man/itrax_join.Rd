@@ -15,3 +15,6 @@ a tibble of all the input data
 \description{
 Join two or more Itrax datasets that have been parsed using \code{"itrax_import()"}
 }
+\examples{
+itrax_join(list(core1 = CD166_19_S1$xrf, core2 = CD166_19_S1$xrf))
+}

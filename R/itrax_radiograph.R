@@ -11,7 +11,15 @@
 #' Also computes the aspect ratio of the image.
 #'
 #' @examples
-#' \dontrun{itrax_radiograph(file = "radiograph.tif", meta = "document.txt", plot = TRUE)}
+#' itrax_radiograph(file = system.file("extdata",
+#'                          "CD166_19_S1_radiograph_adj.tif",
+#'                          package = "itraxR",
+#'                          mustWork = TRUE),
+#'                  meta = system.file("extdata",
+#'                          "CD166_19_S1_rad_document.txt",
+#'                          package = "itraxR",
+#'                          mustWork = TRUE),
+#'                  plot = FALSE)
 #'
 #' @export
 #'
