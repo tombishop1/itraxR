@@ -1,6 +1,6 @@
 #' Read an Itrax Radiograph File
 #'
-#'  Reads an Itrax radiograph file and trims it according to the metadata provided.
+#' Reads an Itrax radiograph file and trims it according to the metadata provided.
 #'
 #' @param file defines the name of the datafile to parse
 #' @param meta defines the relating metadata
