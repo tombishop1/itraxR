@@ -18,7 +18,7 @@
 #'                          "CD166_19_S1_xrf_document.txt",
 #'                          package = "itraxR",
 #'                          mustWork = TRUE),
-#'             plot = FALSE)
+#'             plot = TRUE)
 #'
 #' @export
 #'

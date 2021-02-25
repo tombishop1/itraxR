@@ -36,6 +36,6 @@ itrax_radiograph(file = system.file("extdata",
                          "CD166_19_S1_rad_document.txt",
                          package = "itraxR",
                          mustWork = TRUE),
-                 plot = FALSE)
+                 plot = TRUE)
 
 }
