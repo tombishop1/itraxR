@@ -7,11 +7,14 @@
 #' @param zeros if "addone", adds one to all values. If "limit", replaces zero values with 0.001. Otherwise a function can be supplied to remove zero values.
 #' @param transform binary operator that if TRUE will center-log-transform the data, if FALSE will leave the data untransformed. Otherwise, a function can be supplied to transform the data.
 #' @param return if "pca" the output of \code{prcomp()} is returned, otherwise "list" is a list including the transformed data, sample scores, and the output of prcomp().
+#' @param plot set to true if a biplot is required as a side-effect
 #'
 #' @importFrom tidyr drop_na
 #' @importFrom stats prcomp
 #' @importFrom compositions clr
 #' @importFrom rlang .data
+#' @importFrom broom augment
+#' @import ggfortify
 #'
 #' @return either an output of \code{prcomp()}, or a list including the input data
 #'
@@ -21,10 +24,14 @@
 #' @export
 
 itrax_ordination <- function(dataframe,
-                                 elementsonly = TRUE,
-                                 zeros = "addone",
-                                 transform = TRUE,
-                                 return = "list"){
+                             elementsonly = TRUE,
+                             zeros = "addone",
+                             transform = TRUE,
+                             return = "list",
+                             plot = FALSE){
+
+  # fudge to stop build notes
+  ids <- NULL
 
   # label with ids
   dataframe$ids <- 1:dim(dataframe)[1]
@@ -75,6 +82,15 @@ itrax_ordination <- function(dataframe,
     scale() %>%
     prcomp()
 
+  # make a plot if required
+  if(is.logical(plot) == TRUE && plot == TRUE){
+  print(autoplot(pca,
+           loadings = TRUE,
+           loadings.label = TRUE))
+  } else if(is.logical(plot) == FALSE){
+    stop("plot parameter must be logical (TRUE/FALSE)")
+  }
+
   # select the return
   if(return == "pca"){
     #warning("`return = \"pca\"` will be depreciated, but for now is retained for compatibility.") # not sure about this yet
@@ -95,7 +111,3 @@ itrax_ordination <- function(dataframe,
                   )
              )
 }
-
-# TODO make plotting function here
-# myPCA %>%
-#  broom::augment(CD166_19_S1$xrf %>% tidyr::drop_na())

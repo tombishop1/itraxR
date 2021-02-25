@@ -19,6 +19,7 @@ LazyData: true
 Depends: 
     dplyr,
     ggplot2,
+    ggfortify,
     grid,
     R (>= 3.5.0)
 Imports:
@@ -29,4 +30,5 @@ Imports:
     corrplot,
     rlang,
     compositions,
-    tidyr
+    tidyr,
+    broom

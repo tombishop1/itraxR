@@ -9,7 +9,8 @@ itrax_ordination(
   elementsonly = TRUE,
   zeros = "addone",
   transform = TRUE,
-  return = "list"
+  return = "list",
+  plot = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ itrax_ordination(
 \item{transform}{binary operator that if TRUE will center-log-transform the data, if FALSE will leave the data untransformed. Otherwise, a function can be supplied to transform the data.}
 
 \item{return}{if "pca" the output of \code{prcomp()} is returned, otherwise "list" is a list including the transformed data, sample scores, and the output of prcomp().}
+
+\item{plot}{set to true if a biplot is required as a side-effect}
 }
 \value{
 either an output of \code{prcomp()}, or a list including the input data

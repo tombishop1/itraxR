@@ -9,25 +9,30 @@ itrax_section(
   divisions = 30,
   elementsonly = TRUE,
   zeros = "addone",
-  transform = TRUE
+  transform = TRUE,
+  plot = FALSE
 )
 }
 \arguments{
 \item{dataframe}{pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"}}
 
-\item{divisions}{the number of samples to slice into}
+\item{divisions}{the number of groups to slice into - also the number of representative samples returned}
 
 \item{elementsonly}{if TRUE, only chemical elements are included. If FALSE, the data is passed unfiltered, otherwise a character vector of desired variable names can be supplied}
 
 \item{zeros}{if "addone", adds one to all values. If "limit", replaces zero values with 0.001. Otherwise a function can be supplied to remove zero values.}
 
 \item{transform}{binary operator that if TRUE will center-log-transform the data, if FALSE will leave the data untransformed. Otherwise, a function can be supplied to transform the data.}
+
+\item{plot}{set to true if a summary plot is required as a side-effect - the input dataset must have a depth or position variable - depth is used preferentially.}
 }
 \value{
 either an output of \code{prcomp()}, or a list including the input data
 }
 \description{
-Performs a cluster analysis and automatic statistical grouping of parsed Itrax results data
+Performs a cluster analysis and automatic statistical grouping of parsed Itrax results data to n groups.
+Also provides information on the most "representative" (central) of each group. These can be used to develop a
+sub-sampling regime for calibration using another method.
 }
 \examples{
 itrax_section(CD166_19_S1$xrf)
