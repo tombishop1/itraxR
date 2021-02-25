@@ -19,7 +19,3 @@ a dataframe of the averaged Itrax data
 \description{
 Resamples Itrax results files into smaller averaged ranges. Note that the labels column, if present, will need to be rebuilt.
 }
-\examples{
-\dontrun{itrax_averaging(CD166_19_S1$xrf, interval = 10)}
-
-}

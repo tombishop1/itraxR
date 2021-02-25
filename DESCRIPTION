@@ -27,7 +27,7 @@ Imports:
     chemometrics,
     tiff,
     janitor,
-    corrplot,
+    ggcorrplot,
     rlang,
     compositions,
     tidyr,

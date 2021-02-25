@@ -33,6 +33,6 @@ either an output of \code{prcomp()}, or a list including the input data
 Performs and visualises principle component analysis data from Itrax result data
 }
 \examples{
-itrax_ordination(CD166_19_S1$xrf)
+itrax_ordination(CD166_19_S1$xrf, plot = TRUE)
 
 }

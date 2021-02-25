@@ -2,86 +2,62 @@
 #'
 #' Calculates a correlation matrix for Itrax data results including normalisation and visualisation
 #'
-#' @param dataframe defines the name of the dataframe to reduce --- this should have been imported using \code{"itrax_import()"} or \code{"itrax_join()"}
-#' @param elementsonly logical operator that if TRUE will only perform the analysis for elemental data
-#' @param zeros can be either "addone" or "limit" --- this defines what to do with zero values when normalisating. Limit uses 0.001 as the zero value, add one adds one to all data
-#' @param transform logical operator that if TRUE will center-log-transform the data
-#' @param diagrams logical operator, if TRUE will produce a graphical output
+#' @param dataframe pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"}
+#' @param elementsonly if TRUE, only chemical elements are included. If FALSE, the data is passed unfiltered, otherwise a character vector of desired variable names can be supplied
+#' @param zeros if "addone", adds one to all values. If "limit", replaces zero values with 0.001. Otherwise a function can be supplied to remove zero values.
+#' @param transform binary operator that if TRUE will center-log-transform the data, if FALSE will leave the data untransformed. Otherwise, a function can be supplied to transform the data.
+#' @param plot set to true if a biplot is required as a side-effect
 #'
 #' @return a correlation matrix object
 #'
 #' @examples
-#' \dontrun{itrax_correlation(df)}
+#' itrax_correlation(CD166_19_S1$xrf, plot = TRUE)
 #'
-#' @importFrom utils data
 #' @importFrom stats cor na.omit
 #' @importFrom utils data
+#' @importFrom ggcorrplot ggcorrplot cor_pmat
 #' @export
 
-itrax_correlation=function(dataframe, elementsonly=TRUE, zeros="addone", transform=TRUE, diagrams=TRUE) {
+itrax_correlation = function(dataframe,
+                             elementsonly = TRUE,
+                             zeros = "addone",
+                             transform = TRUE,
+                             plot = FALSE){
 
-  # check the dataframe exists
-  if(is.data.frame(dataframe)){
-    df <- dataframe
-  } else{
-    stop('Dataframe does not exist or object is not a dataframe.')
-  }
+  # fudge to stop check notes
+  . = NULL
+  group = NULL
+  ids = NULL
+  position = NULL
 
-  # rename the rows
-  # if("depth" %in% colnames(df)) {
-  #   rownames(df) <- round(df$depth)
-  #   labels <- "Depth (mm)"
-  # } else{
-  #   df$position <- as.numeric(df$position)
-  #   rownames(df) <- df$position
-  #   labels <- "Position (mm)"
-  # }
-  rownames(df) <- seq(from = 1, length.out = dim(df)[1])
+  # label with ids
+  dataframe$ids <- 1:dim(dataframe)[1]
+  input_dataframe <- dataframe
 
-  # get rid of anything that isn't an element
-  data("periodicTable", package = "PeriodicTable", envir = environment())
-  elements <- periodicTable$symb
-
-  if(elementsonly==TRUE) {
-    df <- df[ , which(names(df) %in% elements)]
-  } else if(elementsonly==FALSE){
-  } else{
-    stop('elementsonly must be true or false')
-  }
-
-  # deal with zero values
-  if(zeros=="addone") {
-    df <- df + 1
-  } else if(zeros=="limit") {
-    df[df == 0] <- 0.001
-  }else{
-    warning('zero values may be present because zeros is not valid')
-  }
-
-  # calculate centered log ratios for all elements in the original dataset
-  if(transform==TRUE) {
-#    require(chemometrics) # could also use "compositions" package
-#    df <- clr(df)
-     df <- chemometrics::clr(df)
-  } else if(transform==FALSE) {
-  } else{
-    stop('transform must be TRUE or FALSE')
-  }
+  # use internal function to do multivariate data preparation
+  dataframe <- multivariate_import(dataframe = dataframe,
+                                   elementsonly = TRUE,
+                                   zeros = "addone",
+                                   transform = TRUE)
 
   # run the correlation matrix
   # in time, I'll add confidence levels to this
-  df_cor <- cor(df, use = "pairwise.complete.obs", method = "pearson")
+  cor_matrix <- cor(dataframe,
+                use = "pairwise.complete.obs",
+                method = "pearson")
 
-  # run diagrams
-  if(diagrams==TRUE) {
-    #require(corrplot)
-    #corrplot.mixed(df_cor, lower="number", upper="color", order="AOE", number.cex=0.75 ) # and confidence levels to this
-    corrplot::corrplot.mixed(df_cor, lower="number", upper="color", order="FPC", number.cex=0.75 ) # and confidence levels to this
-  } else if(diagrams==FALSE){
-  } else{
-    stop('diagrams must be TRUE or FALSE')
+  # draw a summary diagram if required
+  # make a plot if required
+  if(is.logical(plot) == TRUE && plot == TRUE){
+    print(ggcorrplot::ggcorrplot(cor_matrix,
+                                 hc.order = TRUE,
+                                 p.mat = cor_pmat(cor_matrix, method = "spearman"),
+                                 insig = "blank"))
+  } else if(is.logical(plot) == FALSE){
+    stop("plot parameter must be logical (TRUE/FALSE)")
   }
 
-  return(df_cor)
+  # deal with the returns
+  return(cor_matrix)
 }
 

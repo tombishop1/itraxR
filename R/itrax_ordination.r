@@ -9,9 +9,7 @@
 #' @param return if "pca" the output of \code{prcomp()} is returned, otherwise "list" is a list including the transformed data, sample scores, and the output of prcomp().
 #' @param plot set to true if a biplot is required as a side-effect
 #'
-#' @importFrom tidyr drop_na
 #' @importFrom stats prcomp
-#' @importFrom compositions clr
 #' @importFrom rlang .data
 #' @importFrom broom augment
 #' @import ggfortify
@@ -19,7 +17,7 @@
 #' @return either an output of \code{prcomp()}, or a list including the input data
 #'
 #' @examples
-#' itrax_ordination(CD166_19_S1$xrf)
+#' itrax_ordination(CD166_19_S1$xrf, plot = TRUE)
 #'
 #' @export
 
@@ -37,45 +35,11 @@ itrax_ordination <- function(dataframe,
   dataframe$ids <- 1:dim(dataframe)[1]
   input_dataframe <- dataframe
 
-  # trim to only the elements
-  if(is.logical(elementsonly) == TRUE && elementsonly==TRUE){
-    dataframe <- dataframe %>%
-      select(any_of(c(periodicTable$symb, "ids")))
-    dataframe <- dataframe %>%
-      select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))
-  } else if(is.logical(elementsonly) == TRUE && elementsonly==FALSE){
-    dataframe <- dataframe %>%
-      select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))
-  } else{
-    dataframe <- dataframe %>%
-      select(any_of(c(elementsonly, "ids")))
-    dataframe <- dataframe %>%
-      select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))}
-
-  # deal with the zeros
-  if(zeros=="addone"){
-    dataframe <- dataframe + 1
-    dataframe$ids <- dataframe$ids-1
-    dataframe <- dataframe %>% tidyr::drop_na()
-  } else if(zeros=="limit"){
-    dataframe <- dataframe %>%
-      mutate(across(any_of(periodicTable$symb), ~recode(.data, `0` = 0.001))) %>%
-      tidyr::drop_na()
-  } else{
-    dataframe <- dataframe %>%
-      mutate(across(any_of(periodicTable$symb), zeros)) %>%
-      tidyr::drop_na()
-  }
-
-  # deal with the transformation
-  if(is.logical(transform) == TRUE && transform==TRUE){
-    dataframe <- dataframe %>%
-      mutate(across(any_of(periodicTable$symb), ~compositions::clr(.)))
-  } else if(is.logical(transform) == TRUE && transform==FALSE){
-    dataframe <- dataframe
-  } else{
-    dataframe <- transform(dataframe)
-  }
+  # use internal function to do multivariate data preparation
+  dataframe <- multivariate_import(dataframe = dataframe,
+                                   elementsonly = TRUE,
+                                   zeros = "addone",
+                                   transform = TRUE)
 
   # perform the PCA
   pca <- dataframe %>%

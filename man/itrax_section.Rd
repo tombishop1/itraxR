@@ -35,6 +35,6 @@ Also provides information on the most "representative" (central) of each group. 
 sub-sampling regime for calibration using another method.
 }
 \examples{
-itrax_section(CD166_19_S1$xrf)
+itrax_section(CD166_19_S1$xrf, plot = TRUE)
 
 }

@@ -8,9 +8,6 @@
 #'
 #' @return a dataframe of the averaged Itrax data
 #'
-#' @examples
-#' \dontrun{itrax_averaging(CD166_19_S1$xrf, interval = 10)}
-#'
 #' @importFrom stats aggregate
 #'
 #' @export
