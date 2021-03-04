@@ -43,9 +43,9 @@ itrax_section <- function(dataframe,
 
   # use internal function to do multivariate data preparation
   dataframe <- multivariate_import(dataframe = dataframe,
-                                   elementsonly = TRUE,
-                                   zeros = "addone",
-                                   transform = TRUE)
+                                   elementsonly = elementsonly,
+                                   zeros = zeros,
+                                   transform = transform)
 
   # perform the first ordering
   firstorder <- as_tibble(dataframe) %>%

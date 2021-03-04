@@ -16,6 +16,7 @@
 #' @importFrom stats cor na.omit
 #' @importFrom utils data
 #' @importFrom ggcorrplot ggcorrplot cor_pmat
+#' @importFrom tibble column_to_rownames
 #' @export
 
 itrax_correlation = function(dataframe,
@@ -36,15 +37,20 @@ itrax_correlation = function(dataframe,
 
   # use internal function to do multivariate data preparation
   dataframe <- multivariate_import(dataframe = dataframe,
-                                   elementsonly = TRUE,
-                                   zeros = "addone",
-                                   transform = TRUE)
+                                   elementsonly = elementsonly,
+                                   zeros = zeros,
+                                   transform = transform)
+
+  # save the ids
+  input_ids <- dataframe$ids
 
   # run the correlation matrix
   # in time, I'll add confidence levels to this
-  cor_matrix <- cor(dataframe,
-                use = "pairwise.complete.obs",
-                method = "pearson")
+
+  cor_matrix <- dataframe %>%
+    tibble::column_to_rownames(var = "ids") %>%
+    cor(use = "pairwise.complete.obs",
+        method = "pearson")
 
   # draw a summary diagram if required
   # make a plot if required

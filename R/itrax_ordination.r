@@ -12,6 +12,7 @@
 #' @importFrom stats prcomp
 #' @importFrom rlang .data
 #' @importFrom broom augment
+#' @importFrom tibble column_to_rownames
 #' @import ggfortify
 #'
 #' @return either an output of \code{prcomp()}, or a list including the input data
@@ -37,12 +38,16 @@ itrax_ordination <- function(dataframe,
 
   # use internal function to do multivariate data preparation
   dataframe <- multivariate_import(dataframe = dataframe,
-                                   elementsonly = TRUE,
-                                   zeros = "addone",
-                                   transform = TRUE)
+                                   elementsonly = elementsonly,
+                                   zeros = zeros,
+                                   transform = transform)
+
+  # save the ids
+  input_ids <- dataframe$ids
 
   # perform the PCA
   pca <- dataframe %>%
+    tibble::column_to_rownames(var = "ids") %>%
     scale() %>%
     prcomp()
 
@@ -64,6 +69,8 @@ itrax_ordination <- function(dataframe,
       transformed_data <- pca %>%
         broom::augment(as_tibble(dataframe)) %>%
         select(any_of(c(names(dataframe), ".fittedPC1", ".fittedPC2", ".fittedPC3")))
+
+  transformed_data$ids <- input_ids
 
       return(list(pca = pca,
                   data = left_join(as_tibble(input_dataframe) %>%
