@@ -24,8 +24,10 @@ itrax_restspectra <- function(foldername = "XRF data",
                               plot = TRUE,
                               trans = "pseudo_log") {
 
-  require(dplyr)
-  require(ggplot2)
+  energy <- NULL
+  name <- NULL
+  position <- NULL
+  value <- NULL
 
   # read in a list of files
   filenames <- dir(foldername, pattern="*.spe")
