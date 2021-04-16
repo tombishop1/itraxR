@@ -34,6 +34,9 @@ itrax_import <- function(filename = "Results.txt", depth_top = NA, trim_top = 0,
     janitor::remove_empty(which = c("rows", "cols")) %>%
     mutate(validity = as.logical(.data$validity))
 
+  # save filenames for later
+  filenames <- df$filename
+
   # remove stuff we don't need
   if(parameters == "some"){
     df <- df %>% select(any_of(c(elements, others)))
@@ -68,6 +71,12 @@ itrax_import <- function(filename = "Results.txt", depth_top = NA, trim_top = 0,
              MSE = df$MSE) %>%
       select(any_of(others[1:5]), any_of(elements) , any_of(others[6:length(others)]), everything())
   }
+
+  # restore filenames
+  if(parameters == "all"){
+    df$filename <- filenames
+  }
+
   # cut the ends
   if((is.numeric(trim_top) && is.numeric(trim_bottom)) == TRUE){
     df <- df %>% filter(.data$position > min(.data$position) + trim_top & .data$position < max(.data$position) - trim_bottom)
