@@ -93,6 +93,11 @@ itrax_restspectra <- function(foldername = "XRF data",
 
   }
 
+  df <- df %>%
+    t() %>%
+    as_tibble(rownames = NA) %>%
+    mutate(filename = list.files(foldername))
+
   # returns
   return(df)
 }
