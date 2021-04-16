@@ -20,7 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@v1
-          version = "devel"
+        with: 
+          r-version: 'devel'
       - name: Install dependencies
         run: |
           install.packages(c("remotes", "rcmdcheck"))
