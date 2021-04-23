@@ -3,6 +3,7 @@
 #' Parses a folder full of raw spectra files from an Itrax core scanner and produces a spectral graph of all the data by position
 #'
 #' @param foldername defines the folder where the spectra \code{"*.spe"} files are located
+#' @param parameters optionally, defines the Q-Spec settings file from which to calculate the channel energies
 #' @param datapos defines the row at which spectral data begins in the files
 #' @param plot TRUE/FALSE, selects whether to create a plot as a side-effect
 #' @param trans transformation applied in the plot - see `?ggplot2::scales_colour_gradient()` for options
@@ -13,13 +14,15 @@
 #' \dontrun{itrax_restspectra("~/itraxBook/CD166_19_(2020)/CD166_19_S1/CD166_19_S1/XRF data")}
 #'
 #' @import dplyr ggplot2 readr
-#'
 #' @importFrom rlang .data
+#' @importFrom stringr str_which
+#'
 #'
 #' @export
 
 # function for integrating raw xrf spectra and visualising the same
 itrax_restspectra <- function(foldername = "XRF data",
+                              parameters = "settings.dfl",
                               datapos=37,
                               plot = TRUE,
                               trans = "pseudo_log") {
@@ -28,6 +31,15 @@ itrax_restspectra <- function(foldername = "XRF data",
   name <- NULL
   position <- NULL
   value <- NULL
+  filename <- NULL
+  channel <- NULL
+
+  # import the parameters
+  if(file.exists(parameters) == TRUE){
+    settings <- itrax_qspecsettings(parameters)
+    channel_kev <- as.numeric(pull(settings[stringr::str_which(settings$key, pattern = "keV/channel"), "value"]))
+    channel_offset <- as.numeric(pull(settings[stringr::str_which(settings$key, pattern = "energy offset"), "value"]))
+    rm(settings)}
 
   # read in a list of files
   filenames <- dir(foldername, pattern="*.spe")
@@ -58,46 +70,56 @@ itrax_restspectra <- function(foldername = "XRF data",
   # make an array where x=position, y=channel, and colour=intensity
   df <- unname(sapply(tables, `[[`, "content"))
 
-  # label the cols and rows
-  colnames(df) <- unname(sapply(depths, `[[`, 2))
-  row.names(df) <- 1:dim(df)[1] * (17.5 / 1000) # 17.5 the MCA bin width
+  # transpose
+  foo <- t(df)
 
-  # tidy-up
-  rm(depths, tables, filenames, datapos)
+  # make tibble
+  foo <- suppressMessages(as_tibble(foo, .name_repair = "universal"))
+
+  # change the variables names
+  if(exists("channel_offset") && exists("channel_kev")){
+    colnames(foo) <- (1:dim(foo)[2] * channel_kev) + channel_offset
+  } else{
+    colnames(foo) <- 1:dim(foo)[2]
+  }
+
+  # create the variable for depth and filename
+  foo <- foo %>%
+    mutate(filename = filenames,
+           position = unname(sapply(depths, `[[`, 2))) %>%
+    select(filename, position, everything())
 
   # draw a plot as a side-effect if required
   if(plot == TRUE){
+  p <- foo %>%
+    tidyr::pivot_longer(cols = c(-filename, -position)) %>%
+    mutate(name = as.numeric(name)) %>%
+    rename(channel = name) %>%
+    select(-filename) %>%
 
-    # pivot long
-    df %>%
-      as_tibble(rownames = "energy") %>%
-      tidyr::pivot_longer(cols = -energy) %>%
-      rename(position = name) %>%
-      mutate(energy = as.numeric(energy),
-             position = as.numeric(position)) %>%
+    ggplot(aes(x = channel, y = position, fill = value)) +
+    geom_raster() +
+    scale_fill_gradient(name = "value",
+                        trans = trans,
+                        low = "#132B43",
+                        high = "#56B1F7",
+                        labels = round) +
+    scale_y_reverse() +
+    ylab("position [mm]") +
+    guides(fill = FALSE)
 
-    # plot
-    ggplot(aes(x = energy, y = position, fill = value)) +
-      geom_raster() +
-      scale_fill_gradient(name = "value",
-                          trans = trans,
-                          low = "#132B43",
-                          high = "#56B1F7",
-                          labels = round) +
-      scale_y_reverse() +
-      xlab("energy [k eV]") +
-      ylab("position [mm]") +
-      guides(fill = FALSE) -> myPlot
+  if(exists("channel_offset") && exists("channel_kev")){
+    p <- p + xlab("energy [k eV]") +
+      scale_x_continuous(sec.axis = sec_axis(trans = ~ (. / channel_kev) - channel_offset,
+                                             name = "channel [n]"))
+  } else{
+    p <- p + xlab("channel [n]")
+  }
 
-    print(myPlot)
+  print(p)
 
   }
 
-  df <- df %>%
-    t() %>%
-    as_tibble(rownames = NA) %>%
-    mutate(filename = list.files(foldername))
-
   # returns
-  return(df)
+  return(foo)
 }

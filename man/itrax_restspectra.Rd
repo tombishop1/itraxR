@@ -6,6 +6,7 @@
 \usage{
 itrax_restspectra(
   foldername = "XRF data",
+  parameters = "settings.dfl",
   datapos = 37,
   plot = TRUE,
   trans = "pseudo_log"
@@ -13,6 +14,8 @@ itrax_restspectra(
 }
 \arguments{
 \item{foldername}{defines the folder where the spectra \code{"*.spe"} files are located}
+
+\item{parameters}{optionally, defines the Q-Spec settings file from which to calculate the channel energies}
 
 \item{datapos}{defines the row at which spectral data begins in the files}
 

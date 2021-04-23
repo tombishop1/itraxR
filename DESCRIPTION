@@ -32,4 +32,5 @@ Imports:
     compositions,
     tidyr,
     broom,
-    tibble
+    tibble,
+    stringr
