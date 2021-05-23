@@ -29,6 +29,9 @@ itrax_ordination <- function(dataframe,
                              return = "list",
                              plot = FALSE){
 
+  .Deprecated(new = "compositions::princomp.acomp",
+              msg = "`itraxR::itrax_ordination` is deprecated. \n Use compositions::princomp.acomp() instead. \n That method for principle components analysis is much better than this attempt.")
+
   # fudge to stop build notes
   ids <- NULL
 
