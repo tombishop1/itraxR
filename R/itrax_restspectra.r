@@ -50,9 +50,11 @@ itrax_restspectra <- function(foldername = "XRF data",
                                     readr::read_delim,
                                     delim = "\t",
                                     skip = datapos,
-                                    col_types = readr::cols_only(channel = readr::col_double(),
-                                                                 content = readr::col_double()
-                                                                 )
+                                    col_names = c("channel", "content"),
+                                    col_types = "dd",
+                                    #col_types = readr::cols_only(channel = readr::col_double(),
+                                    #                             content = readr::col_double()
+                                    #                             )
                                     )
                              )
 

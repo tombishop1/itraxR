@@ -42,8 +42,10 @@ itrax_spectra <- function(filename,
   spectra <- suppressWarnings(readr::read_delim(file = filename,
                               delim = "\t",
                               skip = 37,
-                              col_types = readr::cols_only(channel = readr::col_double(),
-                                                           content = readr::col_double())
+                              col_names = c("channel", "content"),
+                              col_types = "dd"
+                              #col_types = readr::cols_only(channel = readr::col_double(),
+                              #                             content = readr::col_double())
                               )) %>%
     rename(count = .data$content)
 
