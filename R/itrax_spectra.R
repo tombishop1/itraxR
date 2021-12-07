@@ -42,12 +42,11 @@ itrax_spectra <- function(filename,
   spectra <- suppressWarnings(readr::read_delim(file = filename,
                               delim = "\t",
                               skip = 37,
-                              col_names = c("channel", "content"),
-                              col_types = "dd"
-                              #col_types = readr::cols_only(channel = readr::col_double(),
-                              #                             content = readr::col_double())
+                              col_names = TRUE,
                               )) %>%
-    rename(count = .data$content)
+    select(channel, content) %>%
+    rename(count = .data$content) %>%
+    mutate(count = as.integer(count))
 
   # if the parameters file exists, report the energies
   if(file.exists(parameters) == TRUE){
