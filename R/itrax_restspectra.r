@@ -45,17 +45,10 @@ itrax_restspectra <- function(foldername = "XRF data",
   filenames <- dir(foldername, pattern="*.spe")
   filenames <- paste(foldername, filenames, sep="/")
 
-  # import them all
-  tables <- suppressWarnings(lapply(filenames,
-                                    readr::read_delim,
-                                    delim = "\t",
-                                    skip = datapos,
-                                    col_names = c("channel", "content"),
-                                    col_types = "dd",
-                                    #col_types = readr::cols_only(channel = readr::col_double(),
-                                    #                             content = readr::col_double()
-                                    #                             )
-                                    )
+  # import spectral data
+  tables <- suppressWarnings(lapply(filenames, 
+                                    itrax_spectra, 
+                                    plot = FALSE)
                              )
 
   # import all the scan positions
@@ -66,11 +59,11 @@ itrax_restspectra <- function(foldername = "XRF data",
                                     header = FALSE)
                              )
 
-  # label all the dataframes
+  # label all the dataframes in the list
   names(tables) <- unname(sapply(depths, `[[`, 2))
 
-  # make an array where x=position, y=channel, and colour=intensity
-  df <- unname(sapply(tables, `[[`, "content"))
+  # make an array where x=position, y=channel, and the value (color) = count
+  df <- unname(sapply(tables, `[[`, "count"))
 
   # transpose
   foo <- t(df)
@@ -108,7 +101,7 @@ itrax_restspectra <- function(foldername = "XRF data",
                         labels = round) +
     scale_y_reverse() +
     ylab("position [mm]") +
-    guides(fill = FALSE)
+    guides(fill = "none")
 
   if(exists("channel_offset") && exists("channel_kev")){
     p <- p + xlab("energy [k eV]") +

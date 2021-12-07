@@ -29,6 +29,9 @@
 itrax_spectra <- function(filename,
                           parameters = "settings.dfl",
                           plot = TRUE){
+  
+  channel = NULL
+  content = NULL
 
   # if the parameters file exists, use it
   if(file.exists(parameters) == TRUE){
@@ -39,10 +42,11 @@ itrax_spectra <- function(filename,
   }
 
   # read the spectra file
-  spectra <- suppressWarnings(readr::read_delim(file = filename,
+  spectra <- suppressMessages(readr::read_delim(file = filename,
                               delim = "\t",
                               skip = 37,
                               col_names = TRUE,
+                              show_col_types = FALSE
                               )) %>%
     select(channel, content) %>%
     rename(count = .data$content) %>%
@@ -66,8 +70,7 @@ itrax_spectra <- function(filename,
 
     p <- p +
       geom_line() +
-      scale_y_continuous(trans = "pseudo_log") +
-      ylab("")
+      scale_y_continuous(trans = "pseudo_log", name = NULL)
 
     print(p)
     }
