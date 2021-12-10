@@ -1,8 +1,8 @@
 Package: itraxR
 Type: Package
 Title: Itrax Data Analysis Tools
-Version: 1.5
-Date: 2021-08-15
+Version: 1.6
+Date: 2021-12-10
 Author: Thomas Bishop
 Maintainer: Thomas Bishop <tombishopemail@gmail.com>
 URL: https://thomasbishop.uk
@@ -11,8 +11,7 @@ Description: Parse, trim, join, visualise and analyse data from Itrax sediment c
     scanners manufactured by Cox Analytical Systems, Sweden. Functions are provided for parsing 
     XRF-peak area files, line-scan optical images, and radiographic images, alongside accompanying metadata. 
     A variety of data wrangling tasks like trimming, joining and reducing XRF-peak area data are simplified. 
-    Principle component analysis (PCA), cluster analysis and associated multivariate methods are 
-    implemented with appropriate data transformation. 
+    Multivariate methods are implemented with appropriate data transformation. 
 License: GPL-3
 Encoding: UTF-8
 RoxygenNote: 7.1.1
@@ -22,14 +21,14 @@ Depends:
     ggplot2,
     ggfortify,
     grid,
-    R (>= 3.5.0)
+    R (>= 3.5.0),
+    compositions
 Imports:
     readr,
     tiff,
     janitor,
     ggcorrplot,
     rlang,
-    compositions,
     tidyr,
     broom,
     tibble,

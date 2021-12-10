@@ -16,7 +16,6 @@
 #' @importFrom stats cor na.omit
 #' @importFrom utils data
 #' @importFrom ggcorrplot ggcorrplot cor_pmat
-#' @importFrom tibble column_to_rownames
 #' @export
 
 itrax_correlation = function(dataframe,
@@ -26,29 +25,21 @@ itrax_correlation = function(dataframe,
                              plot = FALSE){
 
   # fudge to stop check notes
-  . = NULL
-  group = NULL
-  ids = NULL
-  position = NULL
 
   # label with ids
-  dataframe$ids <- 1:dim(dataframe)[1]
-  input_dataframe <- dataframe
-
+  dataframe <- dataframe %>%
+    uid_labeller()
+    
   # use internal function to do multivariate data preparation
-  dataframe <- multivariate_import(dataframe = dataframe,
-                                   elementsonly = elementsonly,
-                                   zeros = zeros,
-                                   transform = transform)
-
-  # save the ids
-  input_ids <- dataframe$ids
+  input_dataframe <- multivariate_import(dataframe = dataframe,
+                                         elementsonly = elementsonly,
+                                         zeros = zeros,
+                                         transform = transform)
 
   # run the correlation matrix
   # in time, I'll add confidence levels to this
 
-  cor_matrix <- dataframe %>%
-    tibble::column_to_rownames(var = "ids") %>%
+  cor_matrix <- input_dataframe %>%
     cor(use = "pairwise.complete.obs",
         method = "pearson")
 
@@ -57,7 +48,7 @@ itrax_correlation = function(dataframe,
   if(is.logical(plot) == TRUE && plot == TRUE){
     print(ggcorrplot::ggcorrplot(cor_matrix,
                                  hc.order = TRUE,
-                                 p.mat = cor_pmat(cor_matrix, method = "spearman"),
+                                 p.mat = ggcorrplot::cor_pmat(cor_matrix, method = "spearman"),
                                  insig = "blank"))
   } else if(is.logical(plot) == FALSE){
     stop("plot parameter must be logical (TRUE/FALSE)")

@@ -4,11 +4,11 @@
 #' Also provides information on the most "representative" (central) of each group. These can be used to develop a
 #' sub-sampling regime for calibration using another method.
 #'
-#' @param dataframe pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"}
-#' @param elementsonly if TRUE, only chemical elements are included. If FALSE, the data is passed unfiltered, otherwise a character vector of desired variable names can be supplied
+#' @param dataframe pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"} or \code{"itrax_reduce()"}. 
+#' @param elementsonly if TRUE, only chemical elements are included. If FALSE, the data is passed unfiltered, otherwise a character vector of desired variable names can be supplied.
 #' @param zeros if "addone", adds one to all values. If "limit", replaces zero values with 0.001. Otherwise a function can be supplied to remove zero values.
 #' @param transform binary operator that if TRUE will center-log-transform the data, if FALSE will leave the data untransformed. Otherwise, a function can be supplied to transform the data.
-#' @param divisions the number of groups to slice into - also the number of representative samples returned
+#' @param divisions the number of groups to slice into - also the number of representative samples returned.
 #' @param plot set to true if a summary plot is required as a side-effect - the input dataset must have a depth or position variable - depth is used preferentially.
 #'
 #' @importFrom tidyr drop_na
@@ -16,7 +16,7 @@
 #' @importFrom compositions clr
 #' @importFrom rlang .data
 #'
-#' @return either an output of \code{prcomp()}, or a list including the input data
+#' @return the input data with additional columns `group` and `calib_sample`, and possibly `uid` if not supplied. 
 #'
 #' @examples
 #' itrax_section(CD166_19_S1$xrf, plot = TRUE)
@@ -30,101 +30,93 @@ itrax_section <- function(dataframe,
                           zeros = "addone",
                           transform = TRUE,
                           plot = FALSE){
+  
+  # bind some variables to stop build notes
+  #uid <- group <- value <- NULL
+  calib_sample <- NULL
+  . <- NULL
 
-  # fudge to stop check notes
-  . = NULL
-  group = NULL
-  ids = NULL
-  position = NULL
+# copy the original data
+original_data <- dataframe
+n <- divisions
 
-  # label with ids
-  dataframe$ids <- 1:dim(dataframe)[1]
-  input_dataframe <- dataframe
+# label it with ids
+# if there are already uids, and they are unique, it will just use them
+original_data <- uid_labeller(original_data)
 
-  # use internal function to do multivariate data preparation
-  dataframe <- multivariate_import(dataframe = dataframe,
-                                   elementsonly = elementsonly,
-                                   zeros = zeros,
-                                   transform = transform)
+# make a transformed version of the data
+transformed_data <- original_data %>%
+  multivariate_import(elementsonly = elementsonly, 
+                      zeros = zeros, 
+                      transform = transform) %>%
+  compositions::clr()
 
-  # perform the first ordering
-  firstorder <- as_tibble(dataframe) %>%
-    mutate(group = dataframe %>%
-             as.matrix() %>%
-             dist() %>%
-             hclust(method = "ward.D2") %>%
-             cutree(k=divisions) %>%
-             as.factor()) %>%
-    select(`ids`, `group`)
+# perform first pass work
+firstgroups <- left_join(original_data,
+                         tibble(uid = transformed_data %>%
+                                  rownames(),
+                                group = dist(transformed_data) %>%
+                                  hclust(method = "ward.D2") %>%
+                                  cutree(k = n) %>%
+                                  as.factor()
+                                ),
+                         by = "uid")
 
-  # perform second ordering
-  rep_samples <- lapply(unique(firstorder$group), function(x){
-    # subset a second order group
-  second_order_subset <- as_tibble(dataframe) %>%
-    mutate(group = firstorder$group) %>%
-    filter(group == x)
+# perform second pass work - start by splitting
+split_groups <- firstgroups %>% 
+  select(.data$uid, .data$group) %>%
+  tidyr::drop_na() %>%
+  group_by(.data$group) %>%
+  group_split()
 
-  # perform another ordering of them and subset
-  second_order_subset <- second_order_subset %>%
-     mutate(group = second_order_subset %>%
-             select(-`group`, `ids`) %>%
-             as.matrix() %>%
-             dist() %>%
-             hclust(method = "ward.D2") %>%
-             .$order
-            ) %>%
-    filter(group == round(mean(`group`))) %>%
-    pull(`ids`)
-  })
+samples <- lapply(na.omit(unique(firstgroups$group)),
+                  function(x){
+                    transformed_data[split_groups[[x]] %>% pull(.data$uid),] %>%
+                      dist() %>%
+                      hclust(method = "ward.D2") %>%
+                      `[[`("labels") %>%
+                      `[[`(length(.)/2)
+                    }) %>%
+  unlist() %>%
+  as_tibble() %>% 
+  rename(uid = .data$value) %>% 
+  mutate(calib_sample = TRUE)
 
-  rep_samples <- rep_samples %>%
-    unlist()
+# create the output object
+df <- left_join(firstgroups, samples, by = "uid") %>%
+  tidyr::replace_na(list(calib_sample = FALSE))
 
-  rep_samples <- input_dataframe %>%
-    filter(`ids` %in% rep_samples) %>%
-    select(-`ids`)
-
-  # do a plot if required
-  if(is.logical(plot) == TRUE && plot == TRUE){
-    if("depth" %in% colnames(rep_samples) == TRUE){
-    print(ggplot() +
-            geom_bar(data = right_join(firstorder, input_dataframe, by = "ids"),
-                     aes(x = depth, fill = as.factor(group)),
-                     width = 1) +
-            geom_point(data = rep_samples,
-                       aes(x = depth),
-                       y = 0.5,
-                       shape = 3) +
-            scale_x_reverse() +
-            theme(axis.title.y = element_blank(),
-                  axis.text.y = element_blank(),
-                  axis.ticks.y = element_blank(),
-                  legend.position = "none")
-          )
-    } else if("depth" %in% colnames(rep_samples) == FALSE && "position" %in% colnames(rep_samples) == TRUE){
-      print(ggplot() +
-              geom_bar(data = right_join(firstorder, input_dataframe, by = "ids"),
-                       aes(x = position, fill = as.factor(group)),
-                       width = 1) +
-              geom_point(data = rep_samples,
-                         aes(x = position),
-                         y = 0.5,
-                         shape = 3) +
-              scale_x_reverse() +
-              theme(axis.title.y = element_blank(),
-                    axis.text.y = element_blank(),
-                    axis.ticks.y = element_blank(),
-                    legend.position = "none")
-            )
-      } else(stop("if plot = TRUE, you must include either a depth or position parameter"))
-  } else if(is.logical(plot) == FALSE){
-    stop("plot parameter must be logical (TRUE/FALSE)")
+# sideplot if required
+if(plot == TRUE && !"depth" %in% colnames(df)){
+  print(
+    df %>%
+      ggplot(aes(x = .data$position, y = 1, fill = .data$group)) + 
+      geom_tile() +
+      scale_x_reverse() +
+      theme(axis.title.y = element_blank(),
+            axis.text.y = element_blank(),
+            axis.ticks.y = element_blank(),
+            legend.position = "none") +
+      geom_rug(sides = "b", data = filter(df, calib_sample == TRUE))
+  )
+  
+} else if(plot == TRUE && "depth" %in% colnames(df)){
+  print(
+    df %>%
+      ggplot(aes(x = .data$depth, y = 1, fill = .data$group)) + 
+      geom_tile() +
+      scale_x_reverse() +
+      theme(axis.title.y = element_blank(),
+            axis.text.y = element_blank(),
+            axis.ticks.y = element_blank(),
+            legend.position = "none") +
+      geom_rug(sides = "b", data = filter(df, calib_sample == TRUE))
+  )
+    
   }
+  
 
-  # sort the return
-  return(list(groups = right_join(firstorder, input_dataframe, by = "ids") %>%
-                select(-`ids`),
-              samples = rep_samples))
+
+# create the output
+return(df)
 }
-
-

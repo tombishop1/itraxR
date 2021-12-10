@@ -18,10 +18,18 @@ multivariate_import <- function(dataframe,
                                 zeros,
                                 transform){
 
+  # check if uid exists, error if not
+  if("uid" %in% colnames(dataframe)){ 
+    dataframe <- dataframe %>%
+      tibble::column_to_rownames(var = "uid")
+  } else(
+    stop("you must pass a `uid` column to `multivariate_import()` - use `uid_labeller()`.")
+  )
+
   # trim to only the elements
   if(is.logical(elementsonly) == TRUE && elementsonly==TRUE){
     dataframe <- dataframe %>%
-      select(any_of(c(periodicTable$symb, "ids")))
+      select(any_of(periodicTable$symb))
     dataframe <- dataframe %>%
       select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))
   } else if(is.logical(elementsonly) == TRUE && elementsonly==FALSE){
@@ -29,14 +37,13 @@ multivariate_import <- function(dataframe,
       select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))
   } else{
     dataframe <- dataframe %>%
-      select(any_of(c(elementsonly, "ids")))
+      select(any_of(elementsonly))
     dataframe <- dataframe %>%
       select(which(!colSums(dataframe, na.rm = TRUE) %in% 0))}
 
   # deal with the zeros
   if(zeros=="addone"){
     dataframe <- dataframe + 1
-    dataframe$ids <- dataframe$ids-1
     dataframe <- dataframe %>% tidyr::drop_na()
   } else if(zeros=="limit"){
     dataframe <- dataframe %>%
@@ -47,11 +54,12 @@ multivariate_import <- function(dataframe,
       mutate(across(any_of(periodicTable$symb), zeros)) %>%
       tidyr::drop_na()
   }
-
+  
   # deal with the transformation
   if(is.logical(transform) == TRUE && transform==TRUE){
     dataframe <- dataframe %>%
-      mutate(across(any_of(periodicTable$symb), ~compositions::clr(.)))
+      mutate(across(everything(), function(x){ifelse(x == 0, -1, x)})) %>%
+      compositions::acomp()
   } else if(is.logical(transform) == TRUE && transform==FALSE){
     dataframe <- dataframe
   } else{
@@ -59,5 +67,5 @@ multivariate_import <- function(dataframe,
   }
 
   # returns
-  return(as_tibble(dataframe))
+  return(dataframe)
 }
