@@ -6,7 +6,7 @@
 #' @param depth_top defines the coring in depth of the top of the core, in mm
 #' @param trim_top defines the length of any trimming required of data at the top of the core, in mm
 #' @param trim_bottom defines the length of any trimming required at the bottom of the core, in mm
-#' @param parameters one of all (leave all parameters), some (remove some less useful parameters)
+#' @param parameters one of `all` (leave all parameters), `some` (remove some less useful parameters)
 #'
 #' @return a tibble of the parsed Itrax data
 #'
@@ -18,72 +18,63 @@
 #'                          mustWork = TRUE),
 #'   depth_top = 0)
 #'
-#' @import dplyr ggplot2 grid
+#' @import dplyr
 
 #' @importFrom rlang .data
+#' @importFrom readr read_tsv
+#' @importFrom janitor remove_empty
 #'
 #' @export
 
 itrax_import <- function(filename = "Results.txt", depth_top = NA, trim_top = 0, trim_bottom = 0, parameters = "some"){
-
+  
   elements <- periodicTable$symb
-  others <- c( "position (mm)", "sample.surface", "MSE", "cps", "validity", "Mo inc", "Mo coh", "Cr inc", "Cr coh" )
-
+  others <- c( "depth", "position (mm)", "sample.surface", "MSE", "cps", "kcps", "validity", "Mo inc", "Mo coh", "Cr inc", "Cr coh" )
+  
+  . <- NULL
+  position <- NULL
+  validity <- NULL
+  `position (mm)` <- NULL
+  
+  # report errors
+  if(!file.exists(filename)){
+    stop("That filename doesn't exist, check your working directory.")
+  }
+  
+  if(!is.numeric(depth_top)){
+    stop("The specified top depth must be NA or numeric.")
+  }
+  
+  if(!is.numeric(trim_top) | !is.numeric(trim_bottom)){
+    stop("Trims must be numeric")
+  }
+  
+  if(!parameters %in% c("some", "all")){
+    warning("The parameters should be `some` or `all` - other values might cause unexpected behaviour.")
+  }
+  
   # import and tidy
   df <- suppressMessages(suppressWarnings(readr::read_tsv(filename, skip = 2))) %>%
     janitor::remove_empty(which = c("rows", "cols")) %>%
-    mutate(validity = as.logical(.data$validity))
-
-  # save filenames for later
-  filenames <- df$filename
-
-  # remove stuff we don't need
-  if(parameters == "some"){
-    df <- df %>% select(any_of(c(elements, others)))
-  } else if(parameters == "all"){
-  } else{stop("parameters must be some or all.")}
-
-  # sort out the position and depth
-  if(is.numeric(depth_top) == TRUE){
-    df <- df %>% rename(position = .data$`position (mm)`) %>%
-      mutate(depth = .data$position - min(.data$position) + depth_top) %>%
-      select(depth, everything())
-  } else if(!is.na(depth_top)){
-    stop("depth_top must be numeric or NA.")
-  } else{df <- df %>% rename(position = .data$`position (mm)`)}
-
-  # sort out bad data
-  if(is.numeric(depth_top) == TRUE){
-    df <- suppressMessages(full_join(df %>% filter(.data$validity == TRUE),
-                                     df %>% filter(.data$validity == FALSE) %>% select(any_of(c(elements, "position"))) %>% na_if(0))) %>%
-      arrange(.data$position) %>%
-      mutate(depth = df$depth,
-             validity = df$validity,
-             cps = df$cps,
-             MSE = df$MSE) %>%
-      select(any_of("depth"), any_of(others[1:5]), any_of(elements) , any_of(others[6:length(others)]), everything())
-  } else{
-    df <- suppressMessages(full_join(df %>% filter(.data$validity == TRUE),
-                                     df %>% filter(.data$validity == FALSE) %>% select(any_of(c(elements, "position"))) %>% na_if(0))) %>%
-      arrange(.data$position) %>%
-      mutate(validity = df$validity,
-             cps = df$cps,
-             MSE = df$MSE) %>%
-      select(any_of(others[1:5]), any_of(elements) , any_of(others[6:length(others)]), everything())
-  }
-
-  # restore filenames
-  if(parameters == "all"){
-    df$filename <- filenames
-  }
-
-  # cut the ends
-  if((is.numeric(trim_top) && is.numeric(trim_bottom)) == TRUE){
-    df <- df %>% filter(.data$position > min(.data$position) + trim_top & .data$position < max(.data$position) - trim_bottom)
-  } else{
-    stop("trim_bottom and trim_top should be numeric - set to 0 if no trim required")
-  }
-
-  # tidy up
+    mutate(validity = as.logical(validity)) %>%
+    # filter if requested
+    {if(parameters == "some") 
+      select(., any_of(c(elements, others))) else .} %>%
+    rename(position = `position (mm)`) %>%
+    # sort out position and depth
+    {if(is.numeric(depth_top) == TRUE)      
+      mutate(., depth = position - min(position) + depth_top) else .} %>%
+    # sort out those zero values where valididy == 0
+    mutate(across(any_of(elements), function(x){if_else(validity == TRUE, 
+                                             true = x,
+                                             false = na_if(x, 0))}
+                  )
+           ) %>%
+    # trim top and bottom if required 
+    filter(position >= min(position) + trim_top & position <= max(position) - trim_bottom) %>%
+    # tidy up
+    select(any_of(others[1:7]), any_of(elements), any_of(others[8:length(others)]), everything())
+  
+  # return 
   return(df)
 }

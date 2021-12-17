@@ -1,8 +1,8 @@
 Package: itraxR
 Type: Package
 Title: Itrax Data Analysis Tools
-Version: 1.6
-Date: 2021-12-10
+Version: 1.7
+Date: 2021-12-17
 Author: Thomas Bishop
 Maintainer: Thomas Bishop <tombishopemail@gmail.com>
 URL: https://thomasbishop.uk
