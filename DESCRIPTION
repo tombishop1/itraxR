@@ -14,15 +14,15 @@ Description: Parse, trim, join, visualise and analyse data from Itrax sediment c
     Multivariate methods are implemented with appropriate data transformation. 
 License: GPL-3
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 LazyData: true
 Depends: 
     dplyr,
     ggplot2,
     ggfortify,
-    grid,
     R (>= 3.5.0),
-    compositions
+    compositions,
+    grid
 Imports:
     readr,
     tiff,

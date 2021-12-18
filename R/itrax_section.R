@@ -4,7 +4,7 @@
 #' Also provides information on the most "representative" (central) of each group. These can be used to develop a
 #' sub-sampling regime for calibration using another method.
 #'
-#' @param dataframe pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"} or \code{"itrax_reduce()"}. 
+#' @param dataframe pass the name of a dataframe parsed using \code{"itrax_import()"} or \code{"itrax_join()"} or \code{"itrax_reduce()"}.
 #' @param elementsonly if TRUE, only chemical elements are included. If FALSE, the data is passed unfiltered, otherwise a character vector of desired variable names can be supplied.
 #' @param zeros if "addone", adds one to all values. If "limit", replaces zero values with 0.001. Otherwise a function can be supplied to remove zero values.
 #' @param transform binary operator that if TRUE will center-log-transform the data, if FALSE will leave the data untransformed. Otherwise, a function can be supplied to transform the data.
@@ -12,11 +12,11 @@
 #' @param plot set to true if a summary plot is required as a side-effect - the input dataset must have a depth or position variable - depth is used preferentially.
 #'
 #' @importFrom tidyr drop_na
-#' @importFrom stats prcomp hclust dist cutree
 #' @importFrom compositions clr
 #' @importFrom rlang .data
+#' @importFrom stats hclust cutree
 #'
-#' @return the input data with additional columns `group` and `calib_sample`, and possibly `uid` if not supplied. 
+#' @return the input data with additional columns `group` and `calib_sample`, and possibly `uid` if not supplied.
 #'
 #' @examples
 #' itrax_section(CD166_19_S1$xrf, plot = TRUE)
@@ -30,7 +30,7 @@ itrax_section <- function(dataframe,
                           zeros = "addone",
                           transform = TRUE,
                           plot = FALSE){
-  
+
   # bind some variables to stop build notes
   #uid <- group <- value <- NULL
   calib_sample <- NULL
@@ -46,8 +46,8 @@ original_data <- uid_labeller(original_data)
 
 # make a transformed version of the data
 transformed_data <- original_data %>%
-  multivariate_import(elementsonly = elementsonly, 
-                      zeros = zeros, 
+  multivariate_import(elementsonly = elementsonly,
+                      zeros = zeros,
                       transform = transform) %>%
   compositions::clr()
 
@@ -63,7 +63,7 @@ firstgroups <- left_join(original_data,
                          by = "uid")
 
 # perform second pass work - start by splitting
-split_groups <- firstgroups %>% 
+split_groups <- firstgroups %>%
   select(.data$uid, .data$group) %>%
   tidyr::drop_na() %>%
   group_by(.data$group) %>%
@@ -78,8 +78,8 @@ samples <- lapply(na.omit(unique(firstgroups$group)),
                       `[[`(length(.)/2)
                     }) %>%
   unlist() %>%
-  as_tibble() %>% 
-  rename(uid = .data$value) %>% 
+  as_tibble() %>%
+  rename(uid = .data$value) %>%
   mutate(calib_sample = TRUE)
 
 # create the output object
@@ -90,7 +90,7 @@ df <- left_join(firstgroups, samples, by = "uid") %>%
 if(plot == TRUE && !"depth" %in% colnames(df)){
   print(
     df %>%
-      ggplot(aes(x = .data$position, y = 1, fill = .data$group)) + 
+      ggplot(aes(x = .data$position, y = 1, fill = .data$group)) +
       geom_tile() +
       scale_x_reverse() +
       theme(axis.title.y = element_blank(),
@@ -99,11 +99,11 @@ if(plot == TRUE && !"depth" %in% colnames(df)){
             legend.position = "none") +
       geom_rug(sides = "b", data = filter(df, calib_sample == TRUE))
   )
-  
+
 } else if(plot == TRUE && "depth" %in% colnames(df)){
   print(
     df %>%
-      ggplot(aes(x = .data$depth, y = 1, fill = .data$group)) + 
+      ggplot(aes(x = .data$depth, y = 1, fill = .data$group)) +
       geom_tile() +
       scale_x_reverse() +
       theme(axis.title.y = element_blank(),
@@ -112,9 +112,9 @@ if(plot == TRUE && !"depth" %in% colnames(df)){
             legend.position = "none") +
       geom_rug(sides = "b", data = filter(df, calib_sample == TRUE))
   )
-    
+
   }
-  
+
 
 
 # create the output

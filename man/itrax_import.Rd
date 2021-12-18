@@ -21,7 +21,7 @@ itrax_import(
 
 \item{trim_bottom}{defines the length of any trimming required at the bottom of the core, in mm}
 
-\item{parameters}{one of all (leave all parameters), some (remove some less useful parameters)}
+\item{parameters}{one of `all` (leave all parameters), `some` (remove some less useful parameters)}
 }
 \value{
 a tibble of the parsed Itrax data

@@ -12,6 +12,9 @@
 #' itrax_join(list(core1 = CD166_19_S1$xrf, core2 = CD166_19_S1$xrf))
 
 itrax_join <- function(list){
+
+  depth <- NULL
+
   if(all(unlist(lapply(list, function(x) "depth" %in% colnames(x)))) == FALSE){
     stop("Depth variable is required when joining core sections, but is missing from one or more sections.")
   } else{
