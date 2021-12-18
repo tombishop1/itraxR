@@ -41,7 +41,7 @@ itrax_import <- function(filename = "Results.txt", depth_top = NA, trim_top = 0,
     stop("That filename doesn't exist, check your working directory.")
   }
   
-  if(!is.numeric(depth_top)){
+  if(!is.numeric(depth_top) | is.na(depth_top){
     stop("The specified top depth must be NA or numeric.")
   }
   
