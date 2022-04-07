@@ -35,6 +35,7 @@ itrax_section <- function(dataframe,
   #uid <- group <- value <- NULL
   calib_sample <- NULL
   . <- NULL
+  uid <- NULL
 
 # copy the original data
 original_data <- dataframe
@@ -90,7 +91,8 @@ samples <- full_join(samples,
                      tibble(uid = split_groups[ which(lapply(split_groups, nrow) %>% unlist() == 1) ] %>%
                               lapply(., function(x){select(x, "uid")}) %>%
                               unlist(),
-                            calib_sample = TRUE)) %>%
+                            calib_sample = TRUE),
+                     by = c("uid", "calib_sample")) %>%
   filter() %>%
   mutate(uid = as.character(uid)) %>%
   drop_na()
