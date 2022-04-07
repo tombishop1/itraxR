@@ -20,6 +20,11 @@
 #'                          mustWork = TRUE),
 #'             plot = TRUE)
 #'
+#' @import ggplot2
+#'
+#' @importFrom tiff readTIFF
+#' @importFrom grid rasterGrob
+#'
 #' @export
 #'
 itrax_image <- function(file = "optical.tif",

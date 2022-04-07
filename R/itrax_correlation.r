@@ -13,7 +13,8 @@
 #' @examples
 #' itrax_correlation(CD166_19_S1$xrf, plot = TRUE)
 #'
-#' @importFrom stats cor na.omit
+#' @importFrom stats na.omit
+#' @importFrom compositions cor
 #' @importFrom utils data
 #' @importFrom ggcorrplot ggcorrplot cor_pmat
 #' @export
@@ -29,7 +30,7 @@ itrax_correlation = function(dataframe,
   # label with ids
   dataframe <- dataframe %>%
     uid_labeller()
-    
+
   # use internal function to do multivariate data preparation
   input_dataframe <- multivariate_import(dataframe = dataframe,
                                          elementsonly = elementsonly,
@@ -40,8 +41,8 @@ itrax_correlation = function(dataframe,
   # in time, I'll add confidence levels to this
 
   cor_matrix <- input_dataframe %>%
-    cor(use = "pairwise.complete.obs",
-        method = "pearson")
+    compositions::cor(use = "pairwise.complete.obs",
+                      method = "pearson")
 
   # draw a summary diagram if required
   # make a plot if required
