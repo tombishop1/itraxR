@@ -36,5 +36,6 @@ sub-sampling regime for calibration using another method.
 }
 \examples{
 itrax_section(CD166_19_S1$xrf, plot = TRUE)
+itrax_section(CD166_19_S1$xrf \%>\% itrax_reduce(by = 10), plot = TRUE)
 
 }
