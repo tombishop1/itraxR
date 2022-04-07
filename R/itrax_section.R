@@ -127,13 +127,7 @@ if(plot == TRUE && !"depth" %in% colnames(df)){
   )
 
   }
-<<<<<<< HEAD
-  
-=======
 
-
-
->>>>>>> 57ae8609c2c313be3fd1067d5f2dd3a9e70b714a
 # create the output
 return(df)
 }
