@@ -32,4 +32,5 @@ Imports:
     tidyr,
     broom,
     tibble,
-    stringr
+    stringr,
+    munsellinterpol
