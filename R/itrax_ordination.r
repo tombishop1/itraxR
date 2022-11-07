@@ -14,7 +14,6 @@
 #' @importFrom broom augment
 #' @importFrom tibble rownames_to_column
 #' @import compositions
-#' @import ggfortify
 #'
 #' @return either an output of \code{prcomp()}, or a list including the input data
 #'

@@ -9,16 +9,17 @@
 #'
 #' @examples
 #' itrax_image(file = system.file("extdata",
-#'                          "CD166_19_S1_optical_lowres.tif",
-#'                          package = "itraxR",
-#'                          mustWork = TRUE),
-#'             meta = system.file("extdata",
-#'                          "CD166_19_S1_xrf_document.txt",
-#'                          package = "itraxR",
-#'                          mustWork = TRUE),
-#'             plot = FALSE) |> 
-#'             itrax_munsell() |>
-#'             sample(size = 10)
+#'                               "CD166_19_S1_optical_lowres.tif",
+#'                               package = "itraxR",
+#'                               mustWork = TRUE),
+#'            meta = system.file("extdata",
+#'                               "CD166_19_S1_xrf_document.txt",
+#'                               package = "itraxR",
+#'                               mustWork = TRUE),
+#'            plot = FALSE) %>% 
+#'  magrittr::extract2(1) %>%
+#'  itrax_munsell() %>%
+#'  dplyr::slice_sample(n = 10)
 #'
 #'
 #' @importFrom munsellinterpol RGBtoMunsell
