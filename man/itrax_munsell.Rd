@@ -18,6 +18,7 @@ a table of values
 Reads a colour calibrated Itrax image file and processes it to estimate Munsell colour.
 }
 \examples{
+\dontrun{
 itrax_image(file = system.file("extdata",
                               "CD166_19_S1_optical_lowres.tif",
                               package = "itraxR",
@@ -26,10 +27,11 @@ itrax_image(file = system.file("extdata",
                               "CD166_19_S1_xrf_document.txt",
                               package = "itraxR",
                               mustWork = TRUE),
-           plot = FALSE) \%>\% 
+           plot = FALSE) \%>\%
  magrittr::extract2(1) \%>\%
  itrax_munsell() \%>\%
  dplyr::slice_sample(n = 10)
+ }
 
 
 }
