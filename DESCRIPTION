@@ -5,7 +5,7 @@ Version: 1.8
 Date: 2022-11-07
 Author: Thomas Bishop
 Maintainer: Thomas Bishop <tombishopemail@gmail.com>
-URL: https://thomasbishop.uk
+URL: https://github.com/tombishop1/itraxR/
 BugReports: https://github.com/tombishop1/itraxR/issues
 Description: Parse, trim, join, visualise and analyse data from Itrax sediment core multi-parameter 
     scanners manufactured by Cox Analytical Systems, Sweden. Functions are provided for parsing 
