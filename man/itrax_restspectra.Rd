@@ -13,7 +13,7 @@ itrax_restspectra(
 )
 }
 \arguments{
-\item{foldername}{defines the folder where the spectra \code{"*.spe"} files are located}
+\item{foldername}{defines the folder where the spectra \code{"*.spe"} files are located - or the path of the zipped folder where it is stored.}
 
 \item{parameters}{optionally, defines the Q-Spec settings file from which to calculate the channel energies}
 
