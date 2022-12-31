@@ -1,5 +1,9 @@
 # itraxR
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/tombishop1/itraxR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/tombishop1/itraxR/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
+
 Tools for Parsing and Analysing Itrax Core Scanner Data.
 
 ## Functionality
