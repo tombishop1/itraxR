@@ -4,7 +4,7 @@
 \alias{itrax_spectra}
 \title{Import an individual spectra file}
 \usage{
-itrax_spectra(filename, parameters = "settings.dfl", plot = TRUE)
+itrax_spectra(filename, parameters = "settings.dfl", plot = TRUE, datapos = 37)
 }
 \arguments{
 \item{filename}{defines the name of the *.spe datafile from the core scanner to parse}
@@ -12,6 +12,8 @@ itrax_spectra(filename, parameters = "settings.dfl", plot = TRUE)
 \item{parameters}{optionally defines a relevant Q-Spec settings file in order to compute the energy scale, otherwise channel numbers are reported}
 
 \item{plot}{logical, if TRUE a side-plot is created}
+
+\item{datapos}{defines the row at which spectral data begins in the files}
 }
 \value{
 a tibble of the parsed data

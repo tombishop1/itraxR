@@ -5,6 +5,7 @@
 #' @param filename defines the name of the *.spe datafile from the core scanner to parse
 #' @param parameters optionally defines a relevant Q-Spec settings file in order to compute the energy scale, otherwise channel numbers are reported
 #' @param plot logical, if TRUE a side-plot is created
+#' @param datapos defines the row at which spectral data begins in the files
 #'
 #' @return a tibble of the parsed data
 #'
@@ -28,8 +29,9 @@
 
 itrax_spectra <- function(filename,
                           parameters = "settings.dfl",
-                          plot = TRUE){
-  
+                          plot = TRUE,
+                          datapos = 37){
+
   channel = NULL
   content = NULL
 
@@ -44,13 +46,14 @@ itrax_spectra <- function(filename,
   # read the spectra file
   spectra <- suppressMessages(readr::read_delim(file = filename,
                               delim = "\t",
-                              skip = 37,
+                              skip = datapos,
                               col_names = TRUE,
                               show_col_types = FALSE
                               )) %>%
     select(channel, content) %>%
-    rename(count = .data$content) %>%
-    mutate(count = as.integer(count))
+    rename(count = "content") %>%
+    mutate(count = as.integer(count)) %>%
+    mutate(channel = as.numeric(channel))
 
   # if the parameters file exists, report the energies
   if(file.exists(parameters) == TRUE){

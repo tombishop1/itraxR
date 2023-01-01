@@ -8,6 +8,7 @@ itrax_restspectra(
   foldername = "XRF data",
   parameters = "settings.dfl",
   datapos = 37,
+  depthpos = 6,
   plot = TRUE,
   trans = "pseudo_log"
 )
@@ -18,6 +19,8 @@ itrax_restspectra(
 \item{parameters}{optionally, defines the Q-Spec settings file from which to calculate the channel energies}
 
 \item{datapos}{defines the row at which spectral data begins in the files}
+
+\item{depthpos}{defines the row at which depth data begins is located in the files}
 
 \item{plot}{TRUE/FALSE, selects whether to create a plot as a side-effect}
 

@@ -7,6 +7,7 @@
 #' @param datapos defines the row at which spectral data begins in the files
 #' @param plot TRUE/FALSE, selects whether to create a plot as a side-effect
 #' @param trans transformation applied in the plot - see `?ggplot2::scales_colour_gradient()` for options
+#' @param depthpos defines the row at which depth data begins is located in the files
 #'
 #' @return a dataframe of all the spectral data
 #'
@@ -25,6 +26,7 @@
 itrax_restspectra <- function(foldername = "XRF data",
                               parameters = "settings.dfl",
                               datapos = 37,
+                              depthpos = 6,
                               plot = TRUE,
                               trans = "pseudo_log") {
 
@@ -54,13 +56,15 @@ itrax_restspectra <- function(foldername = "XRF data",
   if(dir.exists(foldername)){
     tables <- suppressWarnings(lapply(filenames,
                                       itrax_spectra,
-                                      plot = FALSE)
+                                      plot = FALSE,
+                                      datapos = datapos)
     )
   } else if(file.exists(foldername)){
     tables <- lapply(filenames,
                      function(x){itrax_spectra(unz(description = foldername,
                                                    filename = x),
-                                               plot = FALSE)
+                                               plot = FALSE,
+                                               datapos = datapos)
                      }
     )
   }
@@ -69,7 +73,7 @@ itrax_restspectra <- function(foldername = "XRF data",
   if(dir.exists(foldername)){
     depths <- suppressWarnings(lapply(filenames,
                                       read.table,
-                                      skip = 6,
+                                      skip = depthpos,
                                       nrows = 1,
                                       header = FALSE)
     )
@@ -77,7 +81,7 @@ itrax_restspectra <- function(foldername = "XRF data",
     depths <- lapply(filenames,
                      function(x){read.table(unz(description = foldername,
                                                 filename = x),
-                                            skip = 6,
+                                            skip = depthpos,
                                             nrows = 1,
                                             header = FALSE)}
     )
