@@ -12,7 +12,7 @@ Description: Parse, trim, join, visualise and analyse data from Itrax sediment c
     XRF-peak area files, line-scan optical images, and radiographic images, alongside accompanying metadata. 
     A variety of data wrangling tasks like trimming, joining and reducing XRF-peak area data are simplified. 
     Multivariate methods are implemented with appropriate data transformation. 
-License: GPL-3
+License: GPL (>= 3)
 Encoding: UTF-8
 RoxygenNote: 7.2.1
 LazyData: true
