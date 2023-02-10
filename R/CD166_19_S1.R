@@ -1,6 +1,6 @@
 #' Itrax core scanner data for core CD166_19_S1
 #'
-#' A dataset containing XRF, optical and radiographic images and metadata for ocean core CD166_19_S1.
+#' A dataset containing XRF, optical and radiographic images and metadata for ocean core CD166_19_S1. This is a subset of a more complete dataset available.
 #'
 #' @format A list containing the following:
 #' \describe{
@@ -9,5 +9,5 @@
 #'   \item{rad}{a list containing the radiographic image matrix and associated metadata}
 #'   }
 #'
-#'   @source Wynn, R. B., and B. T. Cronin. 2005. “RRS "Charles Darwin" Cruise CD166, 29 Oct - 22 Nov 2004. Sedimentary processes and deposits in the Agadir Basin and Gulf of Cadiz.” 59. Vol. 44.
+#' @source Bishop, Thomas; Charidemou, Miros (2023): Core Scanning Data from Core CD166/19. PANGAEA, https://doi.pangaea.de/10.1594/PANGAEA.955347
 "CD166_19_S1"
