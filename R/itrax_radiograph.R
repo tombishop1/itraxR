@@ -65,14 +65,14 @@ itrax_radiograph <- function(file = "radiograph.tif",
             scale_x_continuous(limits = range(as.numeric(colnames(image))),
                                breaks = range(as.numeric(colnames(image))),
                                labels = round(range(as.numeric(colnames(image))), 1)) +
-            scale_y_continuous(limits = rev(range(as.numeric(rownames(image))))) +
+            scale_y_reverse(limits = rev(range(as.numeric(rownames(image))))) +
             labs(y = "Position [mm]", x = "[mm]") +
             coord_fixed(ratio = 1) +
             annotation_custom(rasterGrob(image,
                                          width  = unit(1, "npc"),
                                          height = unit(1, "npc")),
-                              ymax = max(as.numeric(rownames(image))),
-                              ymin = min(as.numeric(rownames(image))),
+                              ymax = max(as.numeric(rownames(image)))/-1,
+                              ymin = min(as.numeric(rownames(image)))/-1,
                               xmin = min(as.numeric(colnames(image))),
                               xmax = max(as.numeric(colnames(image))))
     )
