@@ -1,8 +1,8 @@
 Package: itraxR
 Type: Package
 Title: Itrax Data Analysis Tools
-Version: 1.12.2
-Date: 2024-05-30
+Version: 1.13.1
+Date: 2025-04-10
 Author: Thomas Bishop
 Maintainer: Thomas Bishop <tombishopemail@gmail.com>
 URL: https://github.com/tombishop1/itraxR/
@@ -14,7 +14,7 @@ Description: Parse, trim, join, visualise and analyse data from Itrax sediment c
     Multivariate methods are implemented with appropriate data transformation. 
 License: GPL (>= 3)
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 LazyData: true
 Depends: 
     dplyr,
@@ -33,6 +33,8 @@ Imports:
     tibble,
     stringr,
     munsellinterpol,
-    utils
+    utils,
+    plyr,
+    tidyselect
 Suggests:
     magrittr
