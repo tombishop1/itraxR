@@ -63,7 +63,7 @@ itrax_sumspectra <- function(sumspectra_file = "CD166_19_S1/CD166_19_S1/sumspect
          }
   ) %>%
     
-    plyr::join_all(.data, by = "channel") %>% 
+    plyr::join_all(by = "channel") %>% 
     
     rowwise() %>%
     mutate(count = round(method(c_across(ends_with("spe"))))) %>%
