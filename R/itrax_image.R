@@ -75,8 +75,8 @@ itrax_image <- function(file = "optical.tif",
             annotation_custom(rasterGrob(image,
                                          width  = unit(1, "npc"),
                                          height = unit(1, "npc")),
-                              ymax = max(as.numeric(rownames(image)))/-1,
-                              ymin = min(as.numeric(rownames(image)))/-1,
+                              ymax = max(as.numeric(rownames(image))),
+                              ymin = min(as.numeric(rownames(image))),
                               xmin = min(as.numeric(colnames(image))),
                               xmax = max(as.numeric(colnames(image))))
     )
